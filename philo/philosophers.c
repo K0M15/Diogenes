@@ -6,12 +6,11 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 11:19:42 by afelger           #+#    #+#             */
-/*   Updated: 2025/02/03 19:23:21 by afelger          ###   ########.fr       */
+/*   Updated: 2025/02/03 19:58:10 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
 
 #include <assert.h>
 
@@ -59,11 +58,63 @@ t_appstate *get_appstate(void)
 void philo_init(t_philo *philo, int id, t_philo *last)
 {
 	philo->id = id;
-	// philo->thread
 	philo->state = THINKING;
 	philo->next_death_time = get_appstate()->ttd;
 	philo->left = last;
 	philo->amount_eaten = 0;
+	philo->next_sleep_time = 0;		// FINISH EATING
+	philo->next_wake_time = 0;
+}
+
+void philo_set_state(t_philo *phil, t_philostate state, int time)
+{
+	phil->state = state;
+	// log(phil, THINKING);
+}
+
+void philo_eat(t_philo *phil)
+{
+	int time;
+
+	time = get_time();
+	if (phil->next_wake_time >= time)
+	{
+		philo_set_state(phil, SLEEPING, phil->next_wake_time);
+	}
+}
+
+void philo_think(t_philo *phil)
+{
+	t_appstate	*state;
+	int			time;
+
+	state = get_appstate();
+	if (phil->id % 2 == 0)
+	{
+		pthread_mutex_lock(phil->fork_left);
+		pthread_mutex_lock(phil->fork_right);
+	}
+	else
+	{
+		pthread_mutex_lock(phil->fork_right);
+		pthread_mutex_lock(phil->fork_left);
+	}
+	time = get_time();
+	philo_set_state(phil, EATING, time);
+	phil->next_sleep_time = time + state->tte;
+	phil->next_wake_time = phil->next_sleep_time + state->tts;
+	phil->next_death_time = time + state->ttd;
+}
+
+void philo_sleep(t_philo *phil)
+{
+	int time;
+
+	time = get_time();
+	if (phil->next_wake_time >= time)
+	{
+		philo_set_state(phil, THINKING, phil->next_wake_time);
+	}
 }
 
 void *philo_run(void *data)
@@ -74,28 +125,33 @@ void *philo_run(void *data)
 	while (is_running())
 	{
 		if (EATING == phil->state)
-			assert(0);	//Not implemented
+			philo_eat(phil);
 		else if (SLEEPING == phil->state)
-			assert(0);	//Not implemented
+			philo_sleep(phil);
+			//check if sleeptime finished
 		else if (THINKING == phil->state)
-			assert(0);	//Not implemented
-			//take_forks(philo);
-		else if (DIED == phil->state)
-			assert(0);	//Not implemented
+			philo_think(phil);
 	}
 }
 
-void *paratiritis_run(t_appstate *state)
+void *giatros_run(t_appstate *state)
 {
 	int ctr;
+	int time;
 
 	ctr = 0;
 	while(is_running())
 	{
-		// copy string
-		// check if 
+		time = get_time();
+		if (state->philos[ctr].next_death_time < time)
+			*get_running() = 0;
 		ctr == ++ctr % state->nbr_philos;
 	}
+}
+
+void pratiritis_run()
+{
+	
 }
 
 int main(int argc, char **argv)

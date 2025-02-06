@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 11:21:40 by afelger           #+#    #+#             */
-/*   Updated: 2025/02/03 19:07:14 by afelger          ###   ########.fr       */
+/*   Updated: 2025/02/06 15:14:23 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include "pthread.h"
 # include "sys/time.h"
+# include "printf.h"
+# include "stdlib.h"
 
 typedef enum e_philostate
 {
@@ -23,6 +25,7 @@ typedef enum e_philostate
 	SLEEPING = 2,
 	THINKING = 3,
 	DIED = 4,
+	FORK = 5,
 }	t_philostate;
 
 typedef pthread_mutex_t t_fork;
@@ -34,31 +37,44 @@ typedef struct s_philo
 	t_philostate	state;
 	struct s_philo	*left;
 	struct s_philo	*right;
-	t_fork			*left;
-	t_fork			*right;
+	t_fork			*fork_left;
+	t_fork			*fork_right;
 	int				amount_eaten;
 	int				next_death_time;
+	int				next_wake_time;
+	int				next_sleep_time;
 }	t_philo;
 
 /**
- * Paratitis = Observer
- * Philosopher = Friend of wisdom
+ * Paratitis	= Observer
+ * Philosopher	= Friend of wisdom
+ * giatros 		= Doctor
  */
 typedef struct s_appstate
 {
-	t_philo *philos;
+	t_philo		*philos;
 	pthread_t	*paratiritis;
-	int		nbr_philos;
-	int		ttd;
-	int		tte;
-	int		tts;
-	int		amount_eat;
+	pthread_t	*giatros;
+	int			nbr_philos;
+	int			ttd;
+	int			tte;
+	int			tts;
+	int			amount_eat;
 }	t_appstate;
 
 typedef struct s_event
 {
 	int				philo_id;
 	t_philostate	state;
+	int				timestamp;
 }	t_event;
+
+typedef struct s_log_arr
+{
+	int		ptr_fill;
+	int		ptr_read;
+	t_event	*events;
+	int		size;
+}	t_log_arr;
 
 #endif // PHILOSOPHERS_H

@@ -2,9 +2,9 @@
 
 FLAGS =-Wall -Wextra -Werror 
 FLAGS +=-g -fsanitize=address
-NAME = push_swap
+NAME = philosophers
 #	CORE
-FILES += 
+FILES += philosophers.c
 CC=cc
 
 

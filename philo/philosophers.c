@@ -6,13 +6,21 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 11:19:42 by afelger           #+#    #+#             */
-/*   Updated: 2025/02/06 16:05:31 by afelger          ###   ########.fr       */
+/*   Updated: 2025/02/10 14:59:01 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
 #include <assert.h>
+
+#include "string.h"
+#include "stdlib.h"
+int ftlog(const char *str)
+{
+	write(1, str, strlen(str));
+	return 0;
+}
 
 /**
  * Create Threads
@@ -115,19 +123,68 @@ void philo_init(t_philo *philo, int id, t_philo *last)
 	philo->id = id;
 	philo->state = THINKING;
 	philo->next_death_time = get_appstate()->ttd;
-	philo->left = last;
+	if (last != NULL)
+	{
+		philo->left = last;
+		philo->left->right = philo;
+	}
 	philo->amount_eaten = 0;
 	philo->next_sleep_time = 0;		// FINISH EATING
 	philo->next_wake_time = 0;
 }
 
-void philo_set_state(t_philo *phil, t_philostate state, int time)
+int philos_init(void)
+{
+	t_appstate *state;
+	int c;
+
+	c = 0;
+	state = get_appstate();
+	state->philos = malloc(sizeof(t_philo) * state->nbr_philos);
+	if (state->philos == NULL)
+		return (0);
+	while (c < state->nbr_philos){
+		if (c == 0)
+			philo_init(&state->philos[c], c, NULL);
+		else
+			philo_init(&state->philos[c], c, &state->philos[c-1]);
+		c++;
+	}
+	state->philos[0].left = &state->philos[c - 1];
+	return (1);
+}
+
+int philos_create_forks(void)
+{
+	t_appstate *state;
+	pthread_mutex_t	*forks;
+	int c;
+
+	c = 0;
+	state = get_appstate();
+	forks = malloc(state->nbr_philos * sizeof(pthread_mutex_t));
+	if (forks == NULL)
+		return (0);
+	while (c < state->nbr_philos)
+	{
+		pthread_mutex_init(&forks[c], NULL);
+		state->philos[c].fork_left = &forks[c];
+		if (c + 1 < state->nbr_philos)
+			state->philos[c].fork_right = &forks[c + 1];
+		else
+			state->philos[c].fork_right = &forks[0];
+		c++;
+	}
+	return (1);
+}
+
+void	philo_set_state(t_philo *phil, t_philostate state, int time)
 {
 	phil->state = state;
 	add_log(time, phil->id, phil->state);
 }
 
-void philo_eat(t_philo *phil)
+void	philo_eat(t_philo *phil)
 {
 	int time;
 
@@ -138,7 +195,7 @@ void philo_eat(t_philo *phil)
 	}
 }
 
-void philo_think(t_philo *phil)
+void	philo_think(t_philo *phil)
 {
 	t_appstate	*state;
 	int			time;
@@ -165,7 +222,7 @@ void philo_think(t_philo *phil)
 	phil->next_death_time = time + state->ttd;
 }
 
-void philo_sleep(t_philo *phil)
+void	philo_sleep(t_philo *phil)
 {
 	int time;
 
@@ -174,13 +231,25 @@ void philo_sleep(t_philo *phil)
 		philo_set_state(phil, THINKING, phil->next_wake_time);
 }
 
-void *philo_run(void *data)
+void	wait_running(void)
+{
+	while (!is_running())
+	{
+		usleep(1);
+	}
+	ftlog("Start run\n");
+}
+
+void	*philo_run(void *data)
 {
 	t_philo *phil;
 
 	phil = (t_philo *)data;
+	wait_running();
+	philo_set_state(phil, THINKING, 0);
 	while (is_running())
 	{
+		ftlog("Philo loop\n");
 		if (EATING == phil->state)
 			philo_eat(phil);
 		else if (SLEEPING == phil->state)
@@ -192,7 +261,7 @@ void *philo_run(void *data)
 	return (NULL);
 }
 
-void *giatros_run(void *args)
+void	*giatros_run(void *args)
 {
 	int ctr;
 	int time;
@@ -200,8 +269,10 @@ void *giatros_run(void *args)
 
 	state = (t_appstate *)args;
 	ctr = 0;
+	wait_running();
 	while(is_running())
 	{
+		ftlog("doctor loop\n");
 		time = get_time();
 		if (state->philos[ctr].next_death_time < time)
 		{
@@ -211,18 +282,21 @@ void *giatros_run(void *args)
 		ctr++;
 		ctr %= state->nbr_philos;
 	}
+	ftlog("doctor out\n");
 	return (NULL);
 }
 
-void *pratiritis_run(void *args)
+void	*paratiritis_run(void *args)
 {
 	t_event	*display;
 	t_appstate *state;
 
 	state = (t_appstate *)args;
 	display = get_next_log();
-	while (get_running())
+	wait_running();
+	while (is_running())
 	{
+		ftlog("Paratiritis loop\n");
 		if (NULL == display)
 			break ;
 		if (display->state == THINKING)
@@ -239,30 +313,36 @@ void *pratiritis_run(void *args)
 			return (NULL);
 		}
 	}
+	ftlog("Paratiritis out\n");
 	return (NULL);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	t_philo	*phils;
-	t_appstate *state;
+	// t_philo	*phils;
+	t_appstate *katástasi;
 	int ctr = -1;
 
 	(void) argc;
 	(void) argv;
-	state = get_appstate();
-	state->nbr_philos = 1;
-	state->ttd = 600;
-	state->tte = 100;
-	state->tts = 100;
-	state->amount_eat = -1;
-	phils = malloc(sizeof(t_philo) * state->nbr_philos);
-	if (phils == NULL)
-		exit(0);
+	katástasi = get_appstate();
+	katástasi->nbr_philos = 1;
+	katástasi->ttd = 600;
+	katástasi->tte = 100;
+	katástasi->tts = 100;
+	katástasi->amount_eat = -1;
+	philos_init();
+	philos_create_forks();
+	katástasi->giatros = malloc(sizeof(pthread_t));
+	katástasi->paratiritis = malloc(sizeof(pthread_t));
+	if (katástasi->philos == NULL || katástasi->giatros == NULL || katástasi->paratiritis == NULL)
+		ftlog("Mem init failed\n");
+		// exit(0);
+	pthread_create(katástasi->giatros, NULL, giatros_run, katástasi);
+	pthread_create(katástasi->paratiritis, NULL, paratiritis_run, katástasi);
+	while (++ctr < katástasi->nbr_philos)
+		pthread_create(&katástasi->philos[ctr].thread, NULL, philo_run, &katástasi->philos[ctr]) && ftlog("init philo\n");
 	*get_running() = 1;
-	pthread_create(state->giatros, NULL, giatros_run, state);
-	pthread_create(state->paratiritis, NULL, pratiritis_run, state);
-	while (++ctr < state->nbr_philos)
-		pthread_create(&phils[0].thread, NULL, philo_run, &phils[0]);
-	pthread_join(*state->giatros, NULL);
+	pthread_join(*katástasi->giatros, NULL);
+	// cleanup()
 }

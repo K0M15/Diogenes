@@ -6,17 +6,19 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 11:21:40 by afelger           #+#    #+#             */
-/*   Updated: 2025/02/06 15:14:23 by afelger          ###   ########.fr       */
+/*   Updated: 2025/02/10 14:11:41 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# include "pthread.h"
-# include "sys/time.h"
-# include "printf.h"
-# include "stdlib.h"
+# include <pthread.h>
+# include <sys/time.h>
+# include <unistd.h>
+# include <printf.h>
+# include <stdlib.h>
+# include "ft_malloc.h"
 
 typedef enum e_philostate
 {
@@ -76,5 +78,7 @@ typedef struct s_log_arr
 	t_event	*events;
 	int		size;
 }	t_log_arr;
+
+int	ftatoi(char *str, unsigned int *target);
 
 #endif // PHILOSOPHERS_H

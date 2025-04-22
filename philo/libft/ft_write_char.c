@@ -1,34 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   ft_write_char.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:06:50 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 18:35:05 by afelger          ###   ########.fr       */
+/*   Created: 2024/10/21 09:28:49 by afelger           #+#    #+#             */
+/*   Updated: 2025/02/20 08:54:16 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "ft_printf.h"
 
-int	init_app(t_appstate *state)
+int	writeout_char(va_list ap)
 {
-	if (create_tableware(state->number_of_philosophers, &state->forks)
-		|| create_school(state->number_of_philosophers, &state->philos)
-		|| init_observer(state->observer)
-	)
-		return (1);
-	return (0);
+	char	c;
+
+	c = va_arg(ap, int);
+	if (write(ft_printf_get_fd(), &c, 1) == -1)
+		return (-1);
+	return (1);
 }
 
-int main(int argc, char **argv)
+int	ft_printf_set_fd(int fd)
 {
-	t_appstate *state;
+	static int	current_fd;
 
-	state = parse_args(argc, argv);
-	if (state == NULL)
-		return (1);
-	init_app(state);
-	run(state);
+	if (current_fd == 0)
+		current_fd = 1;
+	if (fd < 0)
+		return (current_fd);
+	current_fd = fd;
+	return (fd);
+}
+
+int	ft_printf_get_fd(void)
+{
+	return (ft_printf_set_fd(-1));
 }

@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_thread.c                                     :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/01 11:38:45 by afelger           #+#    #+#             */
-/*   Updated: 2025/02/01 12:26:09 by afelger          ###   ########.fr       */
+/*   Created: 2024/10/07 17:43:30 by afelger           #+#    #+#             */
+/*   Updated: 2024/10/15 14:10:35 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "libft.h"
 
-int init_philo(int id)
+int	ft_isprint(int c)
 {
-	t_philo *phil;
-
-	phil = malloc(sizeof(t_philo));
-	pthread_create(phil->thread, )
+	if (c >= 32 && c <= 126)
+		return (1);
+	return (0);
 }

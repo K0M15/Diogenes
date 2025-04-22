@@ -1,34 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:06:50 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 18:35:05 by afelger          ###   ########.fr       */
+/*   Created: 2024/10/15 14:08:37 by afelger           #+#    #+#             */
+/*   Updated: 2024/10/15 14:16:21 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "libft.h"
 
-int	init_app(t_appstate *state)
+int	ft_isdigit(int c)
 {
-	if (create_tableware(state->number_of_philosophers, &state->forks)
-		|| create_school(state->number_of_philosophers, &state->philos)
-		|| init_observer(state->observer)
-	)
+	if (c >= '0' && c <= '9')
 		return (1);
 	return (0);
-}
-
-int main(int argc, char **argv)
-{
-	t_appstate *state;
-
-	state = parse_args(argc, argv);
-	if (state == NULL)
-		return (1);
-	init_app(state);
-	run(state);
 }

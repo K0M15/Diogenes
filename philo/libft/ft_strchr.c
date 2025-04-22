@@ -1,34 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:06:50 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 18:35:05 by afelger          ###   ########.fr       */
+/*   Created: 2024/10/15 14:14:16 by afelger           #+#    #+#             */
+/*   Updated: 2024/10/15 17:12:30 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "libft.h"
 
-int	init_app(t_appstate *state)
+char	*ft_strchr(const char *s, int c)
 {
-	if (create_tableware(state->number_of_philosophers, &state->forks)
-		|| create_school(state->number_of_philosophers, &state->philos)
-		|| init_observer(state->observer)
-	)
-		return (1);
+	unsigned long	counter;
+	unsigned long	len;
+
+	counter = 0;
+	len = ft_strlen(s) + 1;
+	while (counter < len)
+	{
+		if ((char) c == s[counter])
+			return ((char *)&s[counter]);
+		counter++;
+	}
 	return (0);
-}
-
-int main(int argc, char **argv)
-{
-	t_appstate *state;
-
-	state = parse_args(argc, argv);
-	if (state == NULL)
-		return (1);
-	init_app(state);
-	run(state);
 }

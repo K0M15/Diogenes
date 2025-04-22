@@ -1,34 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   runtime.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:06:50 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 18:35:05 by afelger          ###   ########.fr       */
+/*   Created: 2025/04/22 14:26:39 by afelger           #+#    #+#             */
+/*   Updated: 2025/04/22 16:37:15 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	init_app(t_appstate *state)
+void run(t_appstate *state)
 {
-	if (create_tableware(state->number_of_philosophers, &state->forks)
-		|| create_school(state->number_of_philosophers, &state->philos)
-		|| init_observer(state->observer)
-	)
-		return (1);
-	return (0);
-}
-
-int main(int argc, char **argv)
-{
-	t_appstate *state;
-
-	state = parse_args(argc, argv);
-	if (state == NULL)
-		return (1);
-	init_app(state);
-	run(state);
+	create_observer();
+	create_forks();
+	create_philos();
+	wait_for_end();
 }

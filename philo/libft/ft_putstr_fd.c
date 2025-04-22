@@ -1,28 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dyn.c                                              :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/01 13:56:44 by afelger           #+#    #+#             */
-/*   Updated: 2025/02/06 14:00:30 by afelger          ###   ########.fr       */
+/*   Created: 2024/10/15 14:39:35 by afelger           #+#    #+#             */
+/*   Updated: 2024/10/16 16:19:56 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pthread.h"
+#include "libft.h"
+#include <unistd.h>
 
-typedef struct s_listelem
+void	ft_putstr_fd(char *s, int fd)
 {
-	void *data;
-	pthread_mutex_t mut;
-}	t_listelem;
+	unsigned long	c;
 
-typedef struct s_list
-{
-	head
-}	t_list;
-
-int list_init(t_list *arr)
-{
+	c = ft_strlen(s);
+	if (c == 0)
+		return ;
+	write(fd, s, c);
 }

@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   chronos.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:06:50 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 18:35:05 by afelger          ###   ########.fr       */
+/*   Created: 2025/04/22 16:13:04 by afelger           #+#    #+#             */
+/*   Updated: 2025/04/22 18:37:52 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include <string.h>
+#include <sys/time.h>
 
-int	init_app(t_appstate *state)
+uint32_t ft_get_us()
 {
-	if (create_tableware(state->number_of_philosophers, &state->forks)
-		|| create_school(state->number_of_philosophers, &state->philos)
-		|| init_observer(state->observer)
-	)
-		return (1);
-	return (0);
+	struct timeval tval;
+
+	if(gettimeofday(&tval, NULL) != 0)
+		return (0);
+	return (tval.tv_usec);
 }
 
-int main(int argc, char **argv)
+uint32_t ft_get_sec()
 {
-	t_appstate *state;
+	struct timeval tval;
 
-	state = parse_args(argc, argv);
-	if (state == NULL)
-		return (1);
-	init_app(state);
-	run(state);
+	if(gettimeofday(&tval, NULL) != 0)
+		return (0);
+	return (tval.tv_sec);
 }

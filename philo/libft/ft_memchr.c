@@ -1,34 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:06:50 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 18:35:05 by afelger          ###   ########.fr       */
+/*   Created: 2024/10/15 14:21:09 by afelger           #+#    #+#             */
+/*   Updated: 2024/10/15 15:46:53 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "libft.h"
 
-int	init_app(t_appstate *state)
+void	*ft_memchr(const void *s, int c, unsigned long n)
 {
-	if (create_tableware(state->number_of_philosophers, &state->forks)
-		|| create_school(state->number_of_philosophers, &state->philos)
-		|| init_observer(state->observer)
-	)
-		return (1);
+	unsigned int	counter;
+	unsigned char	*str;
+	unsigned char	c2;
+
+	str = (unsigned char *)s;
+	c2 = (unsigned char)c;
+	counter = 0;
+	while (counter < n)
+	{
+		if (str[counter] == c2)
+			return (((void *)&str[counter]));
+		counter++;
+	}
 	return (0);
-}
-
-int main(int argc, char **argv)
-{
-	t_appstate *state;
-
-	state = parse_args(argc, argv);
-	if (state == NULL)
-		return (1);
-	init_app(state);
-	run(state);
 }

@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   chronos.c                                          :+:      :+:    :+:   */
+/*   philo_impl.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 16:13:04 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/23 14:06:31 by afelger          ###   ########.fr       */
+/*   Created: 2025/04/23 14:07:11 by afelger           #+#    #+#             */
+/*   Updated: 2025/04/23 15:09:50 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdint.h>
-#include <string.h>
-#include <sys/time.h>
+#include "philosophers.h"
 
-uint32_t ft_get_us()
+void	*phil_main(void *obj)
 {
-	struct timeval tval;
+	t_philosopher	*phil;
+	t_appstate		*state;
 
-	if(gettimeofday(&tval, NULL) != 0)
-		return (0);
-	return (tval.tv_usec);
-}
-
-uint32_t ft_get_sec()
-{
-	struct timeval tval;
-
-	if(gettimeofday(&tval, NULL) != 0)
-		return (0);
-	return (tval.tv_sec);
+	phil = (t_philosopher *) obj;
+	state = (t_appstate *) phil->state;
+	while (phil->amount_eaten < state->each_must_eat)
+	{
+		usleep(10);
+		phil->amount_eaten++;
+	}
+	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:08:33 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 14:37:44 by afelger          ###   ########.fr       */
+/*   Updated: 2025/04/23 15:17:12 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,23 @@ time_to_die time_to_eat time_to_sleep \
 void	*parse_error(enum args_err err)
 {
 	if (err == NULL_PHILOS)
-		ft_putstr_fd("philosophers: wrong amount of philos defined\n", 2);
+		ft_putstr_fd(ERR_COLOR "philosophers: wrong amount of philos\
+defined\n" RES_COLOR, 2);
 	else if (err == NULL_TIME2DIE)
-		ft_putstr_fd("philosophers: wrong amount of time_to_die defined\n", 2);
+		ft_putstr_fd(ERR_COLOR "philosophers: wrong amount of time_to_die\
+defined\n" RES_COLOR, 2);
 	else if (err == NULL_TIME2EAT)
-		ft_putstr_fd("philosophers: wrong amount of time_to_eat defined\n", 2);
+		ft_putstr_fd(ERR_COLOR "philosophers: wrong amount of time_to_eat\
+defined\n" RES_COLOR, 2);
 	else if (err == NULL_TIME2SLEEP)
-		ft_putstr_fd("philosophers: wrong amount of time_to_sleep defined\n", 2);
+		ft_putstr_fd(ERR_COLOR "philosophers: wrong amount of time_to_sleep\
+defined\n" RES_COLOR, 2);
 	else if (err == NULL_EACH_MUST_EAT)
-		ft_putstr_fd("philosophers: wrong amount of number_of_times_each\
-_philosopher_must_eat defined\n", 2);
+		ft_putstr_fd(ERR_COLOR "philosophers: wrong amount of number_of_times\
+_each_philosopher_must_eat defined\n" RES_COLOR, 2);
 	else if (err == WRONG_AMOUNT_OF_ARGS)
-		ft_putstr_fd("philosophers: wrong amount of args entered\n", 2);
+		ft_putstr_fd(ERR_COLOR"philosophers: wrong amount of args entered\n"
+			RES_COLOR, 2);
 	display_info();
 	return (NULL);
 }
@@ -50,7 +55,7 @@ static int check_appstate(t_appstate *state)
 		return (parse_error(NULL_TIME2EAT) != NULL);
 	else if (state->time_to_sleep == 0)
 		return (parse_error(NULL_TIME2SLEEP) != NULL);
-	return (1);
+	return (0);
 }
 
 t_appstate	*parse_args(int argc, char **argv)
@@ -68,6 +73,6 @@ t_appstate	*parse_args(int argc, char **argv)
 	if (argc == 6)
 		state->each_must_eat = ft_atoi(argv[5]);
 	if (check_appstate(state))
-		return (NULL);
+		return (free(state), NULL);
 	return (state);
 }

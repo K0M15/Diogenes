@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:07:58 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/22 18:47:43 by afelger          ###   ########.fr       */
+/*   Updated: 2025/04/23 15:28:48 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 # define PHILOSOPHERS_H
 # include "libc.h"
 # include "include/libft.h"
+
+# define ERR_COLOR "\033[31;1m"
+# define INFO_COLOR "\033[94;1m"
+# define RES_COLOR "\033[0m"
 
 typedef struct s_fork
 {
@@ -43,7 +47,7 @@ typedef struct s_appstate
 	boolean_t		is_stopped;
 	t_fork			*forks;
 	t_philosopher	*philos;
-	pthread_t		*observer;
+	pthread_t		observer;
 }	t_appstate;
 
 enum args_err
@@ -61,6 +65,7 @@ void		*parse_error(enum args_err err);
 void		display_info();
 
 void		run();
+void		wait_for_end();
 
 // FORKS
 int			init_fork(t_fork *fork);
@@ -69,17 +74,17 @@ boolean_t	free_tableware(uint32_t amount, t_fork *forks);
 boolean_t	get_fork(t_fork *fork, t_philosopher *phil);
 void		drop_forks(t_philosopher *phil);
 
-// PHILOS
-int			init_philo(t_philosopher *phil);
-int			create_school(uint32_t amount, t_philosopher **phil);
+// PHILO - Object
+int			init_philo(t_philosopher *phil, uint32_t id, uint64_t init_time, t_appstate *state);
+int			create_school(uint32_t amount, t_philosopher **phil, t_appstate *state);
 int			remove_philo(uint32_t amount, t_philosopher *phil);
 
-// PHILO - Routine
-int			phil_main();
+// PHILO - Implemtation
+void		*phil_main();
 
 // OBSERVER
-int			init_observer(pthread_t *observer);
-int			obs_main();
+int			init_observer(pthread_t *observer, t_appstate *state);
+void		*obs_main();
 
 //TIME
 uint64_t	ft_get_us();

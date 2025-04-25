@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:07:58 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/25 17:31:37 by afelger          ###   ########.fr       */
+/*   Updated: 2025/04/25 19:46:02 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,10 @@ void		*phil_main();
 // OBSERVER
 int			init_observer(pthread_t *observer, t_appstate *state);
 void		*obs_main();
+void 		set_stop(t_appstate *state); //Debug
 
 // TIME
+uint32_t	ft_get_ms();
 uint64_t	ft_get_us();
 
 // Shared

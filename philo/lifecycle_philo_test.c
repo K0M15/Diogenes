@@ -11,7 +11,7 @@ int main()
 	state.time_to_eat = 100;
 	state.time_to_sleep = 100;
 	state.each_must_eat = 3;
-	state.number_of_philosophers = 2;
+	state.number_of_philosophers = 20;
 	if (pthread_mutex_init(&state.mut_is_stopped, NULL)
 		|| pthread_mutex_init(&state.mut_write, NULL))
 	{
@@ -29,7 +29,7 @@ int main()
 		return (1);
 	}
 	pthread_join((state.philos[0].thread), NULL);
-	pthread_join((state.philos[1].thread), NULL);
+	remove_philo(state.number_of_philosophers, state.philos);
 	ft_printf(INFO_COLOR"Exit successfull\n"RES_COLOR);
 	return (0);
 }

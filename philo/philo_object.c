@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 18:35:24 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/25 17:07:57 by afelger          ###   ########.fr       */
+/*   Updated: 2025/04/25 19:47:31 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	create_school(uint32_t amount, t_philosopher **phil, t_appstate *state)
 
 	i = 0;
 	*phil = malloc(sizeof(t_philosopher) * amount);
-	time = ft_get_us();
+	time = ft_get_ms();
 	while (i < amount)
 	{
 		if (init_philo(&((*phil)[i]), i, time, state))
@@ -40,7 +40,17 @@ int	create_school(uint32_t amount, t_philosopher **phil, t_appstate *state)
 			ft_putstr_fd(ERR_COLOR"Error setting up a philo\n"RES_COLOR, 2);
 			return (remove_philo(i, *phil), 1);	//Remove all created...
 		}
-		i++;
+		i+= 2;
+	}
+	i = 1;
+	while (i < amount)
+	{
+		if (init_philo(&((*phil)[i]), i, time, state))
+		{
+			ft_putstr_fd(ERR_COLOR"Error setting up a philo\n"RES_COLOR, 2);
+			return (remove_philo(i, *phil), 1);	//Remove all created...
+		}
+		i+= 2;
 	}
 	return (0);
 }

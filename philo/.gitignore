@@ -1,3 +1,5 @@
 **.o
 */**.o
 .DS_STORE
+philosophers
+libft/libft.a

@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:07:58 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/23 15:28:48 by afelger          ###   ########.fr       */
+/*   Updated: 2025/04/25 17:31:37 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILOSOPHERS_H
 # include "libc.h"
 # include "include/libft.h"
+# include "include/ft_printf.h"
 
 # define ERR_COLOR "\033[31;1m"
 # define INFO_COLOR "\033[94;1m"
@@ -43,6 +44,7 @@ typedef struct s_appstate
 	uint32_t		time_to_eat;
 	uint32_t		time_to_sleep;
 	int64_t			each_must_eat;
+	pthread_mutex_t	mut_write;
 	pthread_mutex_t	mut_is_stopped;
 	boolean_t		is_stopped;
 	t_fork			*forks;
@@ -86,7 +88,10 @@ void		*phil_main();
 int			init_observer(pthread_t *observer, t_appstate *state);
 void		*obs_main();
 
-//TIME
+// TIME
 uint64_t	ft_get_us();
+
+// Shared
+boolean_t check_running(t_appstate *state);
 
 #endif // PHILOSOPHERS_H

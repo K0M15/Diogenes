@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 18:35:24 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/23 15:28:28 by afelger          ###   ########.fr       */
+/*   Updated: 2025/04/25 17:07:57 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ int	create_school(uint32_t amount, t_philosopher **phil, t_appstate *state)
 	while (i < amount)
 	{
 		if (init_philo(&((*phil)[i]), i, time, state))
+		{
+			ft_putstr_fd(ERR_COLOR"Error setting up a philo\n"RES_COLOR, 2);
 			return (remove_philo(i, *phil), 1);	//Remove all created...
+		}
 		i++;
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:07:58 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/25 19:46:02 by afelger          ###   ########.fr       */
+/*   Updated: 2025/04/29 17:24:08 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void 		set_stop(t_appstate *state); //Debug
 // TIME
 uint32_t	ft_get_ms();
 uint64_t	ft_get_us();
+uint64_t	ft_get_acc_us();
 
 // Shared
 boolean_t check_running(t_appstate *state);

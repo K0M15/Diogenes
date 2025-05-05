@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:56 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/05 17:35:56 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/05 17:40:24 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void *obs_main(void *args)
 	t_appstate *state;
 	boolean_t running;
 	// get time
-	usleep(500); // wait for threads to be created
+	sleep(1); // wait for threads to be created
 	state = (t_appstate *)args;
 	philo_id = 0;
 	running = TRUE;

@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:07:58 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/29 17:24:08 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/05 16:45:28 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 # define ERR_COLOR "\033[31;1m"
 # define INFO_COLOR "\033[94;1m"
+# define INFO_COLOR2 "\033[96;1m"
 # define RES_COLOR "\033[0m"
 
 typedef struct s_fork
@@ -83,6 +84,8 @@ int			remove_philo(uint32_t amount, t_philosopher *phil);
 
 // PHILO - Implemtation
 void		*phil_main();
+void		ft_log(char *msg, t_philosopher *phil);
+void		ft_log2(char *msg, t_philosopher *phil);
 
 // OBSERVER
 int			init_observer(pthread_t *observer, t_appstate *state);

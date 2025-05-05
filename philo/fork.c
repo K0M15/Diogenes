@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:37:43 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/29 17:46:27 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/05 16:50:47 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ boolean_t get_fork(t_fork *fork, t_philosopher *phil)
 
 void	drop_forks(t_philosopher *phil)
 {
+	// ft_log2("is dropping forks", phil);
 	if (phil->forks[0] != NULL)
 	{
 		pthread_mutex_lock(&phil->forks[0]->mut_is_taken);
@@ -83,7 +84,7 @@ void	drop_forks(t_philosopher *phil)
 		pthread_mutex_unlock(&phil->forks[0]->mut_taken);
 		phil->forks[0] = NULL;
 	}
-	if (phil->forks[0] != NULL)
+	if (phil->forks[1] != NULL)
 	{
 		pthread_mutex_lock(&phil->forks[1]->mut_is_taken);
 		phil->forks[1]->is_taken = FALSE;

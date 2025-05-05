@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 18:35:24 by afelger           #+#    #+#             */
-/*   Updated: 2025/04/29 16:14:17 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/05 16:51:12 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ int	create_school(uint32_t amount, t_philosopher **phil, t_appstate *state)
 		if (init_philo(&((*phil)[i]), i, time, state))
 			return (ft_putstr_fd(ERR_COLOR"Error setting up a philo\n"RES_COLOR,
 				2), remove_philo(i, *phil), 1);	//Remove all created...
-		i+= 2;
+		i += 2;
 	}
+	usleep(300);
 	i = 1;
 	while (i < amount)
 	{
@@ -65,14 +66,14 @@ int remove_philo(uint32_t amount, t_philosopher *phil)
 	while (i < amount)
 	{
 		// No such process
-		buffer = pthread_detach(phil[i].thread);
+		buffer = pthread_join(phil[i].thread, NULL);
 		if (buffer)
 		{
-			ft_putstr_fd(ERR_COLOR"Error while deataching phil: ", 2); // DEBUG
-			ft_putstr_fd(ft_itoa(i), 2); // DEBUG
-			ft_putstr_fd(" Errcode: ", 2); // DEBUG
-			ft_putstr_fd(ft_itoa(buffer), 2); // DEBUG
-			ft_putstr_fd("\n", 2); // DEBUG
+			// ft_putstr_fd(ERR_COLOR"Error while joining phil: ", 2); // DEBUG
+			// ft_putstr_fd(ft_itoa(i), 2); // DEBUG
+			// ft_putstr_fd(" Errcode: ", 2); // DEBUG
+			// ft_putstr_fd(ft_itoa(buffer), 2); // DEBUG
+			// ft_putstr_fd("\n", 2); // DEBUG
 			ret_code &= buffer;
 		}
 		i++;

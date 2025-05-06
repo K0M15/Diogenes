@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:56 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/05 17:40:24 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/06 14:33:17 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,14 @@ void set_stop(t_appstate *state)
 	pthread_mutex_unlock(&state->mut_is_stopped);
 }
 
-int check_philo(t_philosopher *phil, t_appstate *state)
+int check_philo(t_philosopher *phil, t_appstate *state, uint32_t time)
 {
-	uint32_t time;
 	
-	time = ft_get_ms();
 	if (phil->ate_last + state->time_to_die < time)
+	{
+		ft_log("died", phil);
 		return (1);
+	}
 	return (0);
 }
 
@@ -50,31 +51,22 @@ void *obs_main(void *args)
 {
 	int philo_id;
 	t_appstate *state;
-	boolean_t running;
-	// get time
-	sleep(1); // wait for threads to be created
+	uint32_t time;
+
 	state = (t_appstate *)args;
+	ft_sleep(state->time_to_die - 50);
 	philo_id = 0;
-	running = TRUE;
-	while (running)
+	while (check_running(state))
 	{
+		time = ft_get_ms();
 		if (check_philo(&(state->philos[philo_id
-			% state->number_of_philosophers]), state))
-		{
+			% state->number_of_philosophers]), state, time))
 			set_stop(state);
-			running = FALSE;
-		}
 		else
-		{
 			philo_id++;
-			usleep(1);
-		}
-		if (check_all_eaten(state))
-		{
+		if (check_running(state) && check_all_eaten(state))
 			set_stop(state);
-			running = FALSE;
-		}
-		usleep(1);
+		// usleep(1);
 	}
 	return (NULL);
 }

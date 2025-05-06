@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:37:43 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/05 16:50:47 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/06 14:13:13 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,16 @@ boolean_t get_fork(t_fork *fork, t_philosopher *phil)
 		fork->is_taken = TRUE;
 		res = TRUE;
 		pthread_mutex_lock(&fork->mut_taken);
-		phil->forks[phil->forks[1] == NULL] = fork;
+		if (phil->forks[0] == NULL)
+			phil->forks[0] = fork;
+		else if (phil->forks[1] == NULL)
+			phil->forks[1] = fork;
+		else
+		{
+			res = FALSE;
+			pthread_mutex_unlock(&fork->mut_taken);
+			ft_log(ERR_COLOR"TRIED TO LOCK THIRD FORK", phil);
+		}
 	}
 	pthread_mutex_unlock(&fork->mut_is_taken);
 	return (res);

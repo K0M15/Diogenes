@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:11 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/05 17:20:46 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/06 14:36:40 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,28 +17,22 @@ void	pickup_forks(t_philosopher *phil, t_appstate *state)
 {
 	uint32_t picked;
 
-	picked = 0;
+	picked = (phil->forks[0] != NULL) + (phil->forks[1] != NULL);
 	// maybe return state?? to check for running state and maybe exit
 	while (picked < 2)
 	{
-		if (check_running(phil->state) && get_fork(&(state->forks[phil->id]), phil) && phil->forks[0] == NULL)
+		if (check_running(phil->state) && phil->forks[0] == NULL && get_fork(&(state->forks[phil->id]), phil))
 		{
-			pthread_mutex_lock(&((t_appstate *) phil->state)->mut_write);
-			ft_printf(INFO_COLOR"%d %d has taken a fork\n"RES_COLOR, ft_get_ms(), phil->id);
-			pthread_mutex_unlock(&((t_appstate *) phil->state)->mut_write);
+			// ft_log("%d %d has taken a fork",phil);
+			ft_log2("has taken a fork 0", phil);
 			picked++;
 		}
-		// else
-		// 	drop_forks(phil);
-		if (check_running(phil->state) && get_fork(&(state->forks[(phil->id + 1) % state->number_of_philosophers]), phil) && phil->forks[1] == NULL)
+		if (check_running(phil->state) && get_fork(&(state->forks[(phil->id + 1) % state->number_of_philosophers]), phil))
 		{
-			pthread_mutex_lock(&((t_appstate *) phil->state)->mut_write);
-			ft_printf(INFO_COLOR"%d %d has taken a fork\n"RES_COLOR, ft_get_ms(), (phil->id + 1) % state->number_of_philosophers);
-			pthread_mutex_unlock(&((t_appstate *) phil->state)->mut_write);
+			// ft_log("has taken a fork", phil);
+			ft_log2("has taken a fork 1", phil);
 			picked++;
 		}
-		// else
-		// 	drop_forks(phil);
 		usleep(1);
 	}
 }
@@ -54,6 +48,12 @@ void	ft_log(char *msg, t_philosopher *phil)
 		ft_printf(INFO_COLOR"%d %d %s\n"RES_COLOR, time, phil->id, msg);
 		pthread_mutex_unlock(&((t_appstate *) phil->state)->mut_write);
 	}
+	else
+	{
+		pthread_mutex_lock(&((t_appstate *) phil->state)->mut_write);
+		ft_printf(INFO_COLOR2"%d %d %s - out of scope\n"RES_COLOR, time, phil->id, msg);
+		pthread_mutex_unlock(&((t_appstate *) phil->state)->mut_write);
+	}
 }
 
 void	ft_log2(char *msg, t_philosopher *phil)
@@ -65,6 +65,12 @@ void	ft_log2(char *msg, t_philosopher *phil)
 	{
 		pthread_mutex_lock(&((t_appstate *) phil->state)->mut_write);
 		ft_printf(INFO_COLOR2"%d %d %s\n"RES_COLOR, time, phil->id, msg);
+		pthread_mutex_unlock(&((t_appstate *) phil->state)->mut_write);
+	}
+	else
+	{
+		pthread_mutex_lock(&((t_appstate *) phil->state)->mut_write);
+		ft_printf(INFO_COLOR2"%d %d %s - out of scope\n"RES_COLOR, time, phil->id, msg);
 		pthread_mutex_unlock(&((t_appstate *) phil->state)->mut_write);
 	}
 }
@@ -101,6 +107,7 @@ void	*phil_main(void *obj)
 		ft_log("is thinking", phil);
 		pickup_forks(phil, state);
 		ft_log("is eating", phil);
+		phil->ate_last = ft_get_ms();
 		ft_sleep(state->time_to_eat);
 		drop_forks(phil);
 		phil->amount_eaten++;

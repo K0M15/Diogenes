@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:56 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/07 14:18:04 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 15:13:19 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,9 @@ void *obs_main(void *args)
 				set_stop(state);
 			philo_id++;
 		}
-		usleep(1000);
 		if (check_running(state) && check_all_eaten(state))
 			set_stop(state);
-		usleep(1000); //OPTIMIZE
+		usleep(250); //OPTIMIZE
 	}
 	return (NULL);
 }

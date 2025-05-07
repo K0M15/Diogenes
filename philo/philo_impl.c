@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:11 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/07 14:53:44 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 15:34:56 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ void	pickup_forks(t_philosopher *phil, t_appstate *state)
 	uint32_t picked;
 
 	picked = (phil->forks[0] != NULL) + (phil->forks[1] != NULL);
-	// maybe return state?? to check for running state and maybe exit
-	ft_log2("is getting forks", phil);
+	// ft_log2("is getting forks", phil);
 	while (picked < 2 && check_running(state))
 	{
+		// add a way to check if the forks should stay in hand to prevent dropping in case of not getting the other fork
 		if (check_running(phil->state) 
 			&& get_fork(&(state->forks[phil->id]), phil))
 			// && get_fork(&(state->forks[((phil->id % 2) + phil->id) % state->number_of_philosophers]), phil))
@@ -33,6 +33,8 @@ void	pickup_forks(t_philosopher *phil, t_appstate *state)
 			// ft_log("has taken a fork",phil);
 			picked++;
 		}
+		else
+			drop_forks(phil);
 		if (check_running(phil->state) 
 			&& get_fork(&(state->forks[(phil->id + 1) % state->number_of_philosophers]), phil))
 		{
@@ -43,6 +45,8 @@ void	pickup_forks(t_philosopher *phil, t_appstate *state)
 			// ft_log("has taken a fork " , phil);
 			picked++;
 		}
+		else
+			drop_forks(phil);
 		usleep(500);
 	}
 }
@@ -85,27 +89,23 @@ void	ft_log2(char *msg, t_philosopher *phil)
 	}
 }
 
-void ft_sleep(int ms, t_appstate *state)
+void	ft_sleep(int ms, t_appstate *state)
 {
-	uint64_t	end_time;
-	uint64_t	buffer;
-	uint64_t	b2;
+	uint64_t	target;
+	uint64_t	now;
 
-	buffer = ft_get_acc_us();
-	end_time = buffer + ms * 1000;
-	(void) state;
-	while (buffer <= end_time)
+	(void)state;
+	target = ft_get_acc_us() + (uint64_t)(ms * 1000);
+	while (1)
 	{
-		b2 = end_time - buffer;
-		if (b2 < 500)
-			return ;
-		else if (b2 < 10000)
-			usleep(700);
+		now = ft_get_acc_us();
+		if (now >= target)
+			break;
+		if (now >= target - 2000)
+			usleep(100); // last 1ms: short sleep
 		else
-			usleep(8000);
-		buffer = ft_get_acc_us();
+			usleep(1000); // safe longer sleep
 	}
-	return ;
 }
 
 void	*phil_main(void *obj)
@@ -121,8 +121,8 @@ void	*phil_main(void *obj)
 	{
 		ft_log("is thinking", phil);
 		pickup_forks(phil, state);
-		ft_log("is eating", phil);
 		phil->ate_last = ft_get_ms();
+		ft_log("is eating", phil);
 		ft_sleep(state->time_to_eat, state);
 		drop_forks(phil);
 		phil->amount_eaten++;

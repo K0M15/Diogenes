@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:11 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/06 14:36:40 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 13:46:18 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,30 @@ void	pickup_forks(t_philosopher *phil, t_appstate *state)
 
 	picked = (phil->forks[0] != NULL) + (phil->forks[1] != NULL);
 	// maybe return state?? to check for running state and maybe exit
-	while (picked < 2)
+	ft_log2("is getting forks", phil);
+	while (picked < 2 && check_running(state))
 	{
-		if (check_running(phil->state) && phil->forks[0] == NULL && get_fork(&(state->forks[phil->id]), phil))
+		if (check_running(phil->state) 
+			&& get_fork(&(state->forks[((phil->id % 2) + phil->id) % state->number_of_philosophers]), phil))
 		{
-			// ft_log("%d %d has taken a fork",phil);
-			ft_log2("has taken a fork 0", phil);
+			int forkNo = ((phil->id % 2) + phil->id) % state->number_of_philosophers;
+			pthread_mutex_lock(&state->mut_write);
+			ft_printf("%d %d has taken fork %d\n", ft_get_ms(), phil->id, forkNo);
+			pthread_mutex_unlock(&state->mut_write);
+			// ft_log("has taken a fork",phil);
 			picked++;
 		}
-		if (check_running(phil->state) && get_fork(&(state->forks[(phil->id + 1) % state->number_of_philosophers]), phil))
+		if (check_running(phil->state) 
+			&& get_fork(&(state->forks[((1 - (phil->id % 2)) + phil->id) % state->number_of_philosophers]), phil))
 		{
-			// ft_log("has taken a fork", phil);
-			ft_log2("has taken a fork 1", phil);
+			int forkNo = ((1 - (phil->id % 2)) + phil->id) % state->number_of_philosophers;
+			pthread_mutex_lock(&state->mut_write);
+			ft_printf("%d %d has taken fork %d\n", ft_get_ms(), phil->id, forkNo);
+			pthread_mutex_unlock(&state->mut_write);
+			// ft_log("has taken a fork " , phil);
 			picked++;
 		}
-		usleep(1);
+		usleep(500);
 	}
 }
 
@@ -75,19 +84,19 @@ void	ft_log2(char *msg, t_philosopher *phil)
 	}
 }
 
-void ft_sleep(int ms)
+void ft_sleep(int ms, t_appstate *state)
 {
 	uint64_t	end_time;
 	uint64_t	buffer;
 
 	buffer = ft_get_acc_us();
 	end_time = buffer + ms * 1000;
-	while (buffer <= end_time)
+	while (buffer <= end_time && check_running(state))
 	{
-		if (end_time - buffer < 1000)
-			usleep(100);
+		if (end_time - buffer < 1500)
+			usleep(150);
 		else
-			usleep(700);
+			usleep(1500);
 		buffer = ft_get_acc_us();
 	}
 	return ;
@@ -108,11 +117,11 @@ void	*phil_main(void *obj)
 		pickup_forks(phil, state);
 		ft_log("is eating", phil);
 		phil->ate_last = ft_get_ms();
-		ft_sleep(state->time_to_eat);
+		ft_sleep(state->time_to_eat, state);
 		drop_forks(phil);
 		phil->amount_eaten++;
 		ft_log("is sleeping", phil);
-		ft_sleep(state->time_to_sleep);
+		ft_sleep(state->time_to_sleep, state);
 	}
 	ft_log("LEAVING", phil); // Debug
 	return (NULL);

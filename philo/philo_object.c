@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 18:35:24 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/05 16:51:12 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 13:05:24 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ int	init_philo(t_philosopher *phil, uint32_t id, uint64_t init_time,
 	t_appstate *state)
 {
 	memset(phil, 0, sizeof(t_philosopher));
-	phil->ate_last = init_time;
+	phil->ate_last = 0;
+	(void) init_time;
+	// phil->ate_last = init_time;
 	phil->id = id;
 	phil->state = state;
 	if (pthread_create(&phil->thread, NULL, phil_main, phil))
@@ -41,7 +43,7 @@ int	create_school(uint32_t amount, t_philosopher **phil, t_appstate *state)
 				2), remove_philo(i, *phil), 1);	//Remove all created...
 		i += 2;
 	}
-	usleep(300);
+	usleep(1);
 	i = 1;
 	while (i < amount)
 	{
@@ -69,11 +71,11 @@ int remove_philo(uint32_t amount, t_philosopher *phil)
 		buffer = pthread_join(phil[i].thread, NULL);
 		if (buffer)
 		{
-			// ft_putstr_fd(ERR_COLOR"Error while joining phil: ", 2); // DEBUG
-			// ft_putstr_fd(ft_itoa(i), 2); // DEBUG
-			// ft_putstr_fd(" Errcode: ", 2); // DEBUG
-			// ft_putstr_fd(ft_itoa(buffer), 2); // DEBUG
-			// ft_putstr_fd("\n", 2); // DEBUG
+			ft_putstr_fd(ERR_COLOR"Error while joining phil: ", 2); // DEBUG
+			ft_putstr_fd(ft_itoa(i), 2); // DEBUG
+			ft_putstr_fd(" Errcode: ", 2); // DEBUG
+			ft_putstr_fd(ft_itoa(buffer), 2); // DEBUG
+			ft_putstr_fd("\n", 2); // DEBUG
 			ret_code &= buffer;
 		}
 		i++;

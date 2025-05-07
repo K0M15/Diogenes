@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:07:58 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/06 14:23:40 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 13:19:06 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_philosopher
 	uint32_t	id;
 	pthread_t	thread;
 	uint32_t	amount_eaten;
-	uint64_t	ate_last;
+	uint32_t	ate_last;
 	void		*state;
 	t_fork		*forks[2];
 }	t_philosopher;
@@ -86,7 +86,7 @@ int			remove_philo(uint32_t amount, t_philosopher *phil);
 void		*phil_main();
 void		ft_log(char *msg, t_philosopher *phil);
 void		ft_log2(char *msg, t_philosopher *phil);
-void		ft_sleep(int ms);
+void		ft_sleep(int ms, t_appstate *state);
 
 // OBSERVER
 int			init_observer(pthread_t *observer, t_appstate *state);

@@ -4,7 +4,7 @@ OBJ_DIR = objects
 
 PATH_LIBFT = libft/libft.a
 FLAGS =-Wall -Wextra -Werror 
-FLAGS +=-g -fsanitize=address
+FLAGS +=-g #-fsanitize=address
 NAME = philosophers
 #	CORE
 # FILES += philosophers.c

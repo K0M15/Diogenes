@@ -8,9 +8,9 @@ int main()
 	t_appstate state;
 
 	state.time_to_die = 500;
-	state.time_to_eat = 5000;
+	state.time_to_eat = 200;
 	state.time_to_sleep = 100;
-	state.each_must_eat = 10;
+	state.each_must_eat = 0;
 	state.number_of_philosophers = 10;
 	state.is_stopped = 0;
 	if (pthread_mutex_init(&state.mut_is_stopped, NULL)
@@ -34,9 +34,11 @@ int main()
 		ft_putstr_fd(ERR_COLOR"Error setting up the school\n"RES_COLOR, 2);
 		return (1);
 	}
-	pthread_join((state.philos[0].thread), NULL);
+	// pthread_join((state.philos[0].thread), NULL);
 	pthread_join((state.observer), NULL);
 	remove_philo(state.number_of_philosophers, state.philos); // First is already exited
-	ft_printf(INFO_COLOR"Exit successfull\n"RES_COLOR);
+	pthread_mutex_lock(&state.mut_write);
+	ft_printf(INFO_COLOR"%d Exited successfull \n"RES_COLOR, ft_get_ms());
+	pthread_mutex_unlock(&state.mut_write);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 18:35:24 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/07 13:05:24 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 13:55:35 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	create_school(uint32_t amount, t_philosopher **phil, t_appstate *state)
 				2), remove_philo(i, *phil), 1);	//Remove all created...
 		i += 2;
 	}
-	usleep(1);
+	usleep(300);
 	i = 1;
 	while (i < amount)
 	{

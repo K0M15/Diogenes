@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:37:43 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/06 16:08:49 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 13:54:26 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,9 @@ void	drop_forks(t_philosopher *phil)
 	// ft_log2("is dropping forks", phil);
 	if (phil->forks[0] != NULL)
 	{
+		pthread_mutex_lock(&((t_appstate *)phil->state)->mut_write); // >>> DEBUG
+		ft_printf("%d %d is dropping fork %d\n", ft_get_ms(), phil->id, phil->id);
+		pthread_mutex_unlock(&((t_appstate *)phil->state)->mut_write);// <<< DEBUG
 		pthread_mutex_lock(&phil->forks[0]->mut_is_taken);
 		phil->forks[0]->is_taken = FALSE;
 		pthread_mutex_unlock(&phil->forks[0]->mut_is_taken);
@@ -95,6 +98,9 @@ void	drop_forks(t_philosopher *phil)
 	}
 	if (phil->forks[1] != NULL)
 	{
+		pthread_mutex_lock(&((t_appstate *)phil->state)->mut_write); // >>> DEBUG
+		ft_printf("%d %d is dropping fork %d\n", ft_get_ms(), phil->id, phil->id + 1 % ((t_appstate *)phil->state)->number_of_philosophers);
+		pthread_mutex_unlock(&((t_appstate *)phil->state)->mut_write);// <<< DEBUG
 		pthread_mutex_lock(&phil->forks[1]->mut_is_taken);
 		phil->forks[1]->is_taken = FALSE;
 		pthread_mutex_unlock(&phil->forks[1]->mut_is_taken);

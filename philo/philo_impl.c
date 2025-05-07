@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:11 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/07 13:46:18 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 14:53:44 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ void	pickup_forks(t_philosopher *phil, t_appstate *state)
 	while (picked < 2 && check_running(state))
 	{
 		if (check_running(phil->state) 
-			&& get_fork(&(state->forks[((phil->id % 2) + phil->id) % state->number_of_philosophers]), phil))
+			&& get_fork(&(state->forks[phil->id]), phil))
+			// && get_fork(&(state->forks[((phil->id % 2) + phil->id) % state->number_of_philosophers]), phil))
 		{
-			int forkNo = ((phil->id % 2) + phil->id) % state->number_of_philosophers;
+			int forkNo = phil->id;
 			pthread_mutex_lock(&state->mut_write);
 			ft_printf("%d %d has taken fork %d\n", ft_get_ms(), phil->id, forkNo);
 			pthread_mutex_unlock(&state->mut_write);
@@ -33,9 +34,9 @@ void	pickup_forks(t_philosopher *phil, t_appstate *state)
 			picked++;
 		}
 		if (check_running(phil->state) 
-			&& get_fork(&(state->forks[((1 - (phil->id % 2)) + phil->id) % state->number_of_philosophers]), phil))
+			&& get_fork(&(state->forks[(phil->id + 1) % state->number_of_philosophers]), phil))
 		{
-			int forkNo = ((1 - (phil->id % 2)) + phil->id) % state->number_of_philosophers;
+			int forkNo = (phil->id + 1) % state->number_of_philosophers;
 			pthread_mutex_lock(&state->mut_write);
 			ft_printf("%d %d has taken fork %d\n", ft_get_ms(), phil->id, forkNo);
 			pthread_mutex_unlock(&state->mut_write);
@@ -88,15 +89,20 @@ void ft_sleep(int ms, t_appstate *state)
 {
 	uint64_t	end_time;
 	uint64_t	buffer;
+	uint64_t	b2;
 
 	buffer = ft_get_acc_us();
 	end_time = buffer + ms * 1000;
-	while (buffer <= end_time && check_running(state))
+	(void) state;
+	while (buffer <= end_time)
 	{
-		if (end_time - buffer < 1500)
-			usleep(150);
+		b2 = end_time - buffer;
+		if (b2 < 500)
+			return ;
+		else if (b2 < 10000)
+			usleep(700);
 		else
-			usleep(1500);
+			usleep(8000);
 		buffer = ft_get_acc_us();
 	}
 	return ;

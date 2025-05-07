@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:07:58 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/07 13:19:06 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 14:55:58 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 # include "include/ft_printf.h"
 
 # define ERR_COLOR "\033[31;1m"
-# define INFO_COLOR "\033[94;1m"
-# define INFO_COLOR2 "\033[35;1m"
+// # define INFO_COLOR "\033[94;1m"
+// # define INFO_COLOR2 "\033[35;1m"
+# define INFO_COLOR ""
+# define INFO_COLOR2 ""
 # define RES_COLOR "\033[0m"
 
 typedef struct s_fork

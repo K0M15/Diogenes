@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:07:56 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/07 13:19:35 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/07 14:18:04 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int check_all_eaten(t_appstate *state)
 		if (state->philos[i].amount_eaten >= state->each_must_eat)
 			have_not_eaten--;
 		i++;
-		usleep(100);
 	}
 	return (have_not_eaten == 0);
 }
@@ -69,10 +68,10 @@ void *obs_main(void *args)
 				set_stop(state);
 			philo_id++;
 		}
-		usleep(2000);
+		usleep(1000);
 		if (check_running(state) && check_all_eaten(state))
 			set_stop(state);
-		usleep(5000); //OPTIMIZE
+		usleep(1000); //OPTIMIZE
 	}
 	return (NULL);
 }

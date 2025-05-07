@@ -7,11 +7,11 @@ int main()
 	// t_philosopher phil;
 	t_appstate state;
 
-	state.time_to_die = 500;
+	state.time_to_die = 800;
 	state.time_to_eat = 200;
-	state.time_to_sleep = 100;
-	state.each_must_eat = 0;
-	state.number_of_philosophers = 10;
+	state.time_to_sleep = 200;
+	state.each_must_eat = 1;
+	state.number_of_philosophers = 200;
 	state.is_stopped = 0;
 	if (pthread_mutex_init(&state.mut_is_stopped, NULL)
 		|| pthread_mutex_init(&state.mut_write, NULL))

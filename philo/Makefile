@@ -3,7 +3,7 @@
 OBJ_DIR = objects
 
 PATH_LIBFT = libft/libft.a
-FLAGS =-Wall -Wextra -Werror 
+FLAGS =-Wall -Wextra -Werror -O3
 FLAGS +=-g #-fsanitize=address
 NAME = philosophers
 #	CORE

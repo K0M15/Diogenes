@@ -1,5 +1,8 @@
-**.o
+*.o
 */**.o
 .DS_STORE
 philosophers
-libft/libft.a
+life_test
+libft/libft.*
+phil*/*
+life_t*/*

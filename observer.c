@@ -6,17 +6,32 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/20 15:34:03 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/28 15:50:31 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+bool	check_running(t_appstate *state)
+{
+	bool is_running;
+	
+	is_running = ft_mutex_getvalue(&(state->running));
+	return (is_running);
+}
+bool 		stop_running(t_appstate *state)
+{
+	ft_mutex_setvalue(&(state->running), false);
+	return (true);
+}
 
 int	check_philo(t_philosopher *phil, uint64_t time){
 	if (ft_mutex_getvalue(&(phil->has_eaten)) + phil->state->time_to_die < time)
 		stop_running(phil->state);
 	if (ft_mutex_getvalue(&(phil->has_eaten)))
 		return (1);
+		//TODO....
+	return (0);
 }
 
 void observer_main(t_appstate *state){

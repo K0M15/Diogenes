@@ -6,12 +6,36 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/20 14:43:52 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/28 15:47:31 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 #include <stdio.h>
+
+static t_speaker	*gspeaker(t_speaker *__nullable buffer )
+{
+	static t_speaker	*speaker;
+
+	if (speaker != NULL)
+		speaker = buffer;
+	return (speaker);
+}
+
+void	add_message(enum e_textcolor color, enum e_messagetxt msg, uint64_t time, uint32_t phil_id)
+{
+	t_speaker *speak;
+
+	speak = gspeaker(NULL);
+	while(!ft_mutex_lock(&(speak->write_pos)))
+		usleep(10);
+	speak->messages[speak->write_pos.value].color = color;
+	speak->messages[speak->write_pos.value].msg = msg;
+	speak->messages[speak->write_pos.value].time = time;
+	speak->messages[speak->write_pos.value].phil_id = phil_id;
+	speak->write_pos.value++;
+	ft_mutex_unlock(&(speak->write_pos));
+}
 
 char	*get_message(enum e_messagetxt msg)
 {
@@ -35,12 +59,13 @@ char	*get_message(enum e_messagetxt msg)
 		return (MSG_PHIL_THINK);
 	if (msg == PHIL_DIE)
 		return (MSG_PHIL_DIE);
+	return (MSG_DEFAULT_ERROR);
 }
 
 int	speaker_main(t_appstate *app)
 {
 	t_speaker	*speaker;
-	uint64_t lastWritePos;
+	uint64_t	lastWritePos;
 	t_message	*msg;
 
 	speaker = &app->speaker;
@@ -51,19 +76,23 @@ int	speaker_main(t_appstate *app)
 		{
 			msg = &(speaker->messages[speaker->read_pos]);
 			if (msg->phil_id == UINT32_MAX)
-				printf("%d %s", msg->time, get_message(msg->msg));
+				printf("%llu %s", msg->time, get_message(msg->msg));
 			else
-				printf("%d %d %s", msg->time, msg->phil_id, get_message(msg->msg));
+				printf("%llu %d %s", msg->time, msg->phil_id, get_message(msg->msg));
 			speaker->read_pos++;
 		}
 		usleep(100);
 	}
+	return (0);
 }
 
 int	init_speaker(t_speaker *speaker, t_appstate *app)
 {
 	memset(&(speaker->messages), 0, MESSAGE_BUFFER_SIZE * sizeof(t_message));
-	create_ft_mutex(&(speaker->read_pos));
+	if (gspeaker(speaker) == NULL)
+		ft_error(DEFAULT_ERR);
+	speaker->read_pos = 0;
 	create_ft_mutex(&(speaker->write_pos));
-	pthread_create(&(speaker->thread), NULL, speaker_main, app);
+	pthread_create(&(speaker->thread), NULL, (void *(*)(void *))speaker_main, app);
+	return (0);
 }

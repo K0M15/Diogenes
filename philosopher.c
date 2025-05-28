@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:32:13 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/20 15:30:39 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/28 15:21:08 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ void	get_forks(t_philosopher *phil){
 	forks = phil->forks;
 	while (check_running(phil->state) && forks[0] != UINT8_MAX && forks[1] != UINT8_MAX)
 	{
-		if (ft_mutex_lock(phil->id - 1))
+		if (ft_mutex_lock(&(phil->state->fork[phil->id - 1])))
 			forks[0] = phil->id - 1;
-		if (ft_mutex_lock(phil->id))
+		if (ft_mutex_lock(&(phil->state->fork[phil->id])))
 			forks[1] = phil->id;
 		if (forks[0] == UINT8_MAX || forks[1] == UINT8_MAX)
 			drop_forks(phil);
@@ -34,8 +34,8 @@ void	get_forks(t_philosopher *phil){
 
 void	drop_forks(t_philosopher *phil)
 {
-	ft_mutex_unlock(phil->id - 1);
-	ft_mutex_unlock(phil->id);
+	ft_mutex_unlock(&(phil->state->fork[phil->id - 1]));
+	ft_mutex_unlock(&(phil->state->fork[phil->id]));
 }
 
 void	philo_main(t_philosopher *phil)

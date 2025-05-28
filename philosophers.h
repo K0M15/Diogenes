@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/20 15:29:53 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/28 15:47:42 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # define MSG_PHIL_EAT "is eating\n"
 # define MSG_PHIL_THINK "is thinking\n"
 # define MSG_PHIL_DIE "has died\n"
+# define MSG_DEFAULT_ERROR "An error has occured\n"
 
 # define MESSAGE_BUFFER_SIZE 1000
 
@@ -40,6 +41,7 @@ enum e_textcolor{
 };
 
 enum e_messagetxt{
+	DEFAULT_ERR,
 	RETRIEVE_TIME_ERR,
 	THREAD_INIT_ERR,
 	THREAD_JOIN_ERR,
@@ -74,13 +76,13 @@ typedef struct s_speaker {
 }	t_speaker;
 
 typedef struct s_philosopher {
-	uint8_t		id;
-	t_speaker	*handle_speak;
-	t_ft_mutex	has_eaten;
-	pthread_t	thread;
-	t_ft_mutex	last_ate;
-	t_appstate	*state;
-	uint8_t		forks[2];
+	uint8_t				id;
+	t_speaker			*handle_speak;
+	t_ft_mutex			has_eaten;
+	pthread_t			thread;
+	t_ft_mutex			last_ate;
+	struct s_appstate	*state;
+	uint8_t				forks[2];
 }	t_philosopher;
 
 typedef struct s_appstate {
@@ -95,13 +97,14 @@ typedef struct s_appstate {
 	uint32_t		notepme;
 }	t_appstate;
 
-uint64_t ft_gettime();
-void ft_sleep(int targettime);
-void ft_error(enum e_messagetxt msg);
-bool check_running(t_appstate *state);
-bool stop_running(t_appstate *state);
+uint64_t	ft_gettime();
+void 		ft_sleep(int targettime);
+void 		ft_error(enum e_messagetxt msg);
+bool 		check_running(t_appstate *state);
+bool 		stop_running(t_appstate *state);
+void		drop_forks(t_philosopher *phil);
 
-void add_message(enum e_textcolor color, enum e_messagetxt msg, uint64_t time, uint32_t phil_id);
+void		add_message(enum e_textcolor color, enum e_messagetxt msg, uint64_t time, uint32_t phil_id);
 
 
 bool		ft_mutex_lock(t_ft_mutex *mut);

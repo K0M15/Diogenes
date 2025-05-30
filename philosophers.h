@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/28 15:47:42 by afelger          ###   ########.fr       */
+/*   Updated: 2025/05/30 14:14:27 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ typedef struct s_philosopher {
 typedef struct s_appstate {
 	t_speaker		speaker;
 	t_ft_mutex		running;
-	t_philosopher	philosopher[201];
+	t_philosopher	philosopher[200];
 	t_ft_mutex		fork[200];
 	uint32_t		number_philos;
 	uint32_t		time_to_die;
@@ -115,4 +115,7 @@ uint64_t	ft_mutex_getvalue(t_ft_mutex *mut);
 uint32_t	create_ft_mutex(t_ft_mutex *mut);
 uint32_t	destroy_ft_mutex(t_ft_mutex *mut);
 
+void	philo_main(t_philosopher *phil);
+void	observer_main(t_appstate *state);
+int		init_speaker(t_speaker *speaker, t_appstate *app);
 #endif /* PHILOSPHER_H */

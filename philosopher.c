@@ -13,17 +13,11 @@
 #include "philosophers.h"
 
 void	get_forks(t_philosopher *phil){
-	uint8_t		*forks;
 	uint64_t	time;
 
-	forks = phil->forks;
-	while (check_running(phil->state) && forks[0] != UINT8_MAX && forks[1] != UINT8_MAX)
+	while (check_running(phil->state))
 	{
-		if (ft_mutex_lock(&(phil->state->fork[phil->id - 1])))
-			forks[0] = phil->id - 1;
-		if (ft_mutex_lock(&(phil->state->fork[phil->id])))
-			forks[1] = phil->id;
-		if (forks[0] == UINT8_MAX || forks[1] == UINT8_MAX)
+		if (!ft_mutex_lock(phil->forks[0]) || !ft_mutex_lock(phil->forks[1]))
 			drop_forks(phil);
 		usleep(300);
 	}
@@ -32,10 +26,11 @@ void	get_forks(t_philosopher *phil){
 	add_message(BLUE, PHIL_FORK, time, phil->id);
 }
 
+
 void	drop_forks(t_philosopher *phil)
 {
-	ft_mutex_unlock(&(phil->state->fork[phil->id - 1]));
-	ft_mutex_unlock(&(phil->state->fork[phil->id]));
+	ft_mutex_unlock(phil->forks[0]);
+	ft_mutex_unlock(phil->forks[1]);
 }
 
 void	philo_main(t_philosopher *phil)
@@ -45,6 +40,8 @@ void	philo_main(t_philosopher *phil)
 	time = 0;
 	while (check_running(phil->state)){
 		add_message(BLUE, PHIL_THINK, time, phil->id);
+		ft_sleep((phil->state->time_to_die - phil->state->time_to_sleep
+			- phil->state->time_to_eat) * 0.9); // CHECK if first time
 		get_forks(phil);
 		time = ft_gettime();
 		add_message(GREEN, PHIL_EAT, time, phil->id);
@@ -55,4 +52,10 @@ void	philo_main(t_philosopher *phil)
 		add_message(BLUE, PHIL_SLEEP, time, phil->id);
 		ft_sleep(time += phil->state->time_to_sleep);
 	}
+}
+
+void	*philo_thread(void *arg) {
+    t_philosopher *philo = (t_philosopher *)arg;
+    philo_main(philo);
+    return NULL;
 }

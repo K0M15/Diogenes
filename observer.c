@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   observer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/30 14:13:55 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/03 14:01:17 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ bool 		stop_running(t_appstate *state)
 
 int	check_philo(t_philosopher *phil, uint64_t time){
 	if (ft_mutex_getvalue(&(phil->has_eaten)) + phil->state->time_to_die < time)
+	{
+		add_message(RED, PHIL_DIE, time, phil->id);
 		stop_running(phil->state);
-	if (ft_mutex_getvalue(&(phil->has_eaten)))
+	}
+	if (ft_mutex_getvalue(&(phil->has_eaten)) >= phil->state->notepme)
 		return (1);
-		//TODO....
 	return (0);
 }
 
@@ -46,8 +48,17 @@ void observer_main(t_appstate *state)
 		check = 0;
 		time = ft_gettime();
 		while (++check < state->number_philos && check_running(state))
-			has_eaten += check_philo(&(state->philosopher[check]), time);	//should be quite fast, if time error occ, recheck time each loop
-		if (has_eaten == state->number_philos)
+			has_eaten += check_philo(&(state->philosophers[check]), time);	//should be quite fast, if time error occ, recheck time each loop
+		if (has_eaten == state->number_philos && state->notepme != 0)
 			stop_running(state);
 	}
+}
+
+void *observer_wrapper(void *arg)
+{
+	t_appstate *state;
+
+	state = (t_appstate *)arg;
+    observer_main(state);
+    return NULL;
 }

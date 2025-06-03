@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/30 14:14:27 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/03 12:52:02 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,15 @@ typedef struct s_philosopher {
 	pthread_t			thread;
 	t_ft_mutex			last_ate;
 	struct s_appstate	*state;
-	uint8_t				forks[2];
+	t_ft_mutex			*forks[2];
 }	t_philosopher;
 
 typedef struct s_appstate {
 	t_speaker		speaker;
+	pthread_t		observer;
 	t_ft_mutex		running;
-	t_philosopher	philosopher[200];
-	t_ft_mutex		fork[200];
+	t_philosopher	*philosophers;
+	t_ft_mutex		*forks;
 	uint32_t		number_philos;
 	uint32_t		time_to_die;
 	uint32_t		time_to_eat;
@@ -98,7 +99,7 @@ typedef struct s_appstate {
 }	t_appstate;
 
 uint64_t	ft_gettime();
-void 		ft_sleep(int targettime);
+void		ft_sleep(int ms);
 void 		ft_error(enum e_messagetxt msg);
 bool 		check_running(t_appstate *state);
 bool 		stop_running(t_appstate *state);
@@ -114,8 +115,11 @@ bool		ft_mutex_incvalue(t_ft_mutex *mut);
 uint64_t	ft_mutex_getvalue(t_ft_mutex *mut);
 uint32_t	create_ft_mutex(t_ft_mutex *mut);
 uint32_t	destroy_ft_mutex(t_ft_mutex *mut);
+int			parse_input(int argc, char **argv, t_appstate *state);
+
 
 void	philo_main(t_philosopher *phil);
-void	observer_main(t_appstate *state);
+void	*philo_thread(void *arg);
+void	*observer_wrapper(void *arg);
 int		init_speaker(t_speaker *speaker, t_appstate *app);
 #endif /* PHILOSPHER_H */

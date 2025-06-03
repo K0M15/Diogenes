@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   speaker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/05/28 15:47:31 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/03 15:22:30 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 #include <stdio.h>
 
-static t_speaker	*gspeaker(t_speaker *__nullable buffer )
+static t_speaker	*gspeaker(t_speaker *buffer )
 {
 	static t_speaker	*speaker;
 
-	if (speaker != NULL)
+	if (buffer != NULL)
 		speaker = buffer;
 	return (speaker);
 }
@@ -53,7 +53,7 @@ char	*get_message(enum e_messagetxt msg)
 		return (MSG_PHIL_FORK);
 	if (msg == PHIL_SLEEP)
 		return (MSG_PHIL_SLEEP);
-		if (msg == PHIL_EAT)
+	if (msg == PHIL_EAT)
 			return (MSG_PHIL_EAT);
 	if (msg == PHIL_THINK)
 		return (MSG_PHIL_THINK);
@@ -62,23 +62,23 @@ char	*get_message(enum e_messagetxt msg)
 	return (MSG_DEFAULT_ERROR);
 }
 
-int	speaker_main(t_appstate *app)
+int	speaker_main(t_appstate *state)
 {
 	t_speaker	*speaker;
 	uint64_t	lastWritePos;
 	t_message	*msg;
 
-	speaker = &app->speaker;
-	while (check_running(app))
+	speaker = &(state->speaker);
+	while (check_running(state))
 	{
 		lastWritePos = ft_mutex_getvalue(&(speaker->write_pos));
-		while (lastWritePos >= speaker->read_pos)
+		while (lastWritePos > speaker->read_pos)
 		{
 			msg = &(speaker->messages[speaker->read_pos]);
 			if (msg->phil_id == UINT32_MAX)
-				printf("%llu %s", msg->time, get_message(msg->msg));
+				printf("%lu %s", msg->time, get_message(msg->msg));
 			else
-				printf("%llu %d %s", msg->time, msg->phil_id, get_message(msg->msg));
+				printf("%lu %d %s", msg->time, msg->phil_id, get_message(msg->msg));
 			speaker->read_pos++;
 		}
 		usleep(100);
@@ -86,13 +86,20 @@ int	speaker_main(t_appstate *app)
 	return (0);
 }
 
+void	*speaker_wapper(void *args)
+{
+	speaker_main((t_appstate *)args);
+	return (NULL);
+}
+
 int	init_speaker(t_speaker *speaker, t_appstate *app)
 {
 	memset(&(speaker->messages), 0, MESSAGE_BUFFER_SIZE * sizeof(t_message));
 	if (gspeaker(speaker) == NULL)
-		ft_error(DEFAULT_ERR);
+		return (0);
 	speaker->read_pos = 0;
-	create_ft_mutex(&(speaker->write_pos));
-	pthread_create(&(speaker->thread), NULL, (void *(*)(void *))speaker_main, app);
+	if (create_ft_mutex(&(speaker->write_pos)))
+		return (0);
+	pthread_create(&(speaker->thread), NULL, speaker_wapper, app);
 	return (0);
 }

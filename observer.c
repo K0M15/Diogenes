@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/03 14:01:17 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/05 14:08:26 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool 		stop_running(t_appstate *state)
 int	check_philo(t_philosopher *phil, uint64_t time){
 	if (ft_mutex_getvalue(&(phil->has_eaten)) + phil->state->time_to_die < time)
 	{
-		add_message(RED, PHIL_DIE, time, phil->id);
+		add_message(RED, PHIL_DIE, phil->id, phil->handle_speak);
 		stop_running(phil->state);
 	}
 	if (ft_mutex_getvalue(&(phil->has_eaten)) >= phil->state->notepme)

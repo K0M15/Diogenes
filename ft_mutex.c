@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:32:23 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/03 14:52:36 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/06 08:34:44 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool ft_mutex_lock(t_ft_mutex *mut)
 void ft_mutex_unlock(t_ft_mutex *mut)
 {
 	pthread_mutex_unlock(&(mut->locked));
-	pthread_mutex_lock(&(mut->checklock)); // wont work...
+	pthread_mutex_lock(&(mut->checklock));
 	mut->value = false;
 	pthread_mutex_unlock(&(mut->checklock));
 }
@@ -58,8 +58,10 @@ uint64_t ft_mutex_getvalue(t_ft_mutex *mut)
 {
 	uint64_t	result;
 
-	pthread_mutex_lock(&(mut->checklock));
+	pthread_mutex_lock(&(mut->checklock)); //Probably need to lock both mutexes here
+	pthread_mutex_lock(&(mut->locked)); 
 	result = mut->value;
+	pthread_mutex_unlock(&(mut->locked)); 
 	pthread_mutex_unlock(&(mut->checklock));
 	return (result);
 }

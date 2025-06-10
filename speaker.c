@@ -6,35 +6,31 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/03 15:22:30 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/06 08:32:19 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-static t_speaker	*gspeaker(t_speaker *buffer )
+int	add_message(enum e_textcolor color, enum e_messagetxt msg, uint32_t phil_id, t_speaker *speaker)
 {
-	static t_speaker	*speaker;
+	t_message	*new_msg;
 
-	if (buffer != NULL)
-		speaker = buffer;
-	return (speaker);
-}
-
-void	add_message(enum e_textcolor color, enum e_messagetxt msg, uint64_t time, uint32_t phil_id)
-{
-	t_speaker *speak;
-
-	speak = gspeaker(NULL);
-	while(!ft_mutex_lock(&(speak->write_pos)))
-		usleep(10);
-	speak->messages[speak->write_pos.value].color = color;
-	speak->messages[speak->write_pos.value].msg = msg;
-	speak->messages[speak->write_pos.value].time = time;
-	speak->messages[speak->write_pos.value].phil_id = phil_id;
-	speak->write_pos.value++;
-	ft_mutex_unlock(&(speak->write_pos));
+	new_msg = malloc(sizeof(t_message));
+	if (!new_msg)
+		return (ft_error(MEM_ERR), 1);
+	new_msg->color = color;
+	new_msg->msg = msg;
+	new_msg->time = ft_gettime();
+	new_msg->phil_id = phil_id;
+	new_msg->next = NULL;
+	pthread_mutex_lock(&(speaker->lock_write));
+	speaker->write->next = new_msg;
+	speaker->write = new_msg;
+	pthread_mutex_unlock(&(speaker->lock_write));
+	return (0);
 }
 
 char	*get_message(enum e_messagetxt msg)
@@ -65,23 +61,23 @@ char	*get_message(enum e_messagetxt msg)
 int	speaker_main(t_appstate *state)
 {
 	t_speaker	*speaker;
-	uint64_t	lastWritePos;
-	t_message	*msg;
+	t_message	*next;
 
 	speaker = &(state->speaker);
 	while (check_running(state))
 	{
-		lastWritePos = ft_mutex_getvalue(&(speaker->write_pos));
-		while (lastWritePos > speaker->read_pos)
+		pthread_mutex_lock(&(speaker->lock_write));
+		if (speaker->read == speaker->write)
 		{
-			msg = &(speaker->messages[speaker->read_pos]);
-			if (msg->phil_id == UINT32_MAX)
-				printf("%lu %s", msg->time, get_message(msg->msg));
-			else
-				printf("%lu %d %s", msg->time, msg->phil_id, get_message(msg->msg));
-			speaker->read_pos++;
+			pthread_mutex_unlock(&(speaker->lock_write));
+			continue;
 		}
-		usleep(100);
+		pthread_mutex_unlock(&(speaker->lock_write));
+		printf("\033[%d;m%lu %d %s\033[0m\n", speaker->read->next->color, speaker->read->next->time, 
+			speaker->read->next->phil_id, get_message(speaker->read->next->msg));
+		next = speaker->read->next;
+		free(speaker->read);
+		speaker->read = next;
 	}
 	return (0);
 }
@@ -91,15 +87,18 @@ void	*speaker_wapper(void *args)
 	speaker_main((t_appstate *)args);
 	return (NULL);
 }
-
+	
 int	init_speaker(t_speaker *speaker, t_appstate *app)
 {
-	memset(&(speaker->messages), 0, MESSAGE_BUFFER_SIZE * sizeof(t_message));
-	if (gspeaker(speaker) == NULL)
-		return (0);
-	speaker->read_pos = 0;
-	if (create_ft_mutex(&(speaker->write_pos)))
-		return (0);
-	pthread_create(&(speaker->thread), NULL, speaker_wapper, app);
+	(void)app;
+	
+	speaker->read = malloc(sizeof(t_message));
+	if (!speaker->read || pthread_mutex_init(&speaker->lock_write, NULL))
+		return (ft_error(MEM_ERR), 1);
+	speaker->write = speaker->read;
+	speaker->read->next = NULL;
+	speaker->read->color = RED;
+	if (pthread_create(&(speaker->thread), NULL, speaker_wapper, (void *)app))
+		return (ft_error(THREAD_INIT_ERR), 1);
 	return (0);
 }

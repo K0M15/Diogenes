@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:16 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/06 08:57:16 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/10 12:49:23 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ uint64_t ft_gettime()
 			ft_error(RETRIEVE_TIME_ERR);
 		else
 		{
-			start = current.tv_sec + (current.tv_usec / 1000);
+			start = current.tv_sec * 1000 + (current.tv_usec / 1000);
 			return (0);
 		}
 	}
 	if (gettimeofday(&current, NULL))
 		ft_error(RETRIEVE_TIME_ERR);
-	return (current.tv_sec + (current.tv_usec / 1000) - start);
+	return (current.tv_sec * 1000 + (current.tv_usec / 1000) - start);
 }
 
 void ft_sleep(int ms, t_appstate *state)

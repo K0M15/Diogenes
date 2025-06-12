@@ -1,8 +1,0 @@
-*.o
-*/**.o
-.DS_STORE
-philosophers
-life_test
-libft/libft.*
-phil*/*
-life_t*/*

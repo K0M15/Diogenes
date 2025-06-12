@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/06 08:32:19 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/12 12:37:15 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,19 @@ char	*get_message(enum e_messagetxt msg)
 	return (MSG_DEFAULT_ERROR);
 }
 
+int free_messages(t_message *msg)
+{
+	t_message	*next;
+
+	while (msg)
+	{
+		next = msg->next;
+		free(msg);
+		msg = next;
+	}
+	return (0);
+}
+
 int	speaker_main(t_appstate *state)
 {
 	t_speaker	*speaker;
@@ -73,7 +86,7 @@ int	speaker_main(t_appstate *state)
 			continue;
 		}
 		pthread_mutex_unlock(&(speaker->lock_write));
-		printf("\033[%d;m%lu %d %s\033[0m\n", speaker->read->next->color, speaker->read->next->time, 
+		printf("\033[%d;m%lu %d %s\033[0m", speaker->read->next->color, speaker->read->next->time, 
 			speaker->read->next->phil_id, get_message(speaker->read->next->msg));
 		next = speaker->read->next;
 		free(speaker->read);
@@ -85,6 +98,7 @@ int	speaker_main(t_appstate *state)
 void	*speaker_wapper(void *args)
 {
 	speaker_main((t_appstate *)args);
+	free_messages(((t_appstate *)args)->speaker.read);
 	return (NULL);
 }
 	

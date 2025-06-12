@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/05 14:08:26 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/12 11:50:45 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ bool 		stop_running(t_appstate *state)
 }
 
 int	check_philo(t_philosopher *phil, uint64_t time){
-	if (ft_mutex_getvalue(&(phil->has_eaten)) + phil->state->time_to_die < time)
+	if (ft_mutex_getvalue(&(phil->has_eaten)) >= phil->state->notepme)
+		return (1);
+	if (ft_mutex_getvalue(&(phil->last_ate)) + phil->state->time_to_die < time)
 	{
 		add_message(RED, PHIL_DIE, phil->id, phil->handle_speak);
 		stop_running(phil->state);
 	}
-	if (ft_mutex_getvalue(&(phil->has_eaten)) >= phil->state->notepme)
-		return (1);
 	return (0);
 }
 
@@ -40,17 +40,21 @@ void observer_main(t_appstate *state)
 {
 	uint8_t		has_eaten;
 	uint8_t		check;
-	uint64_t	time;
+	// uint64_t	time;
 
 	while (check_running(state))
 	{
 		has_eaten = 0;
 		check = 0;
-		time = ft_gettime();
-		while (++check < state->number_philos && check_running(state))
-			has_eaten += check_philo(&(state->philosophers[check]), time);	//should be quite fast, if time error occ, recheck time each loop
+		while (check < state->number_philos && check_running(state))
+		{
+			has_eaten += check_philo(&(state->philosophers[check]), ft_gettime());	//should be quite fast, if time error occ, recheck time each loop
+			check++;
+		}
 		if (has_eaten == state->number_philos && state->notepme != 0)
 			stop_running(state);
+		// add_message(RED, PHIL_THINK, 10000 + has_eaten, &(state->speaker)); // Observer thinking
+		usleep(1000);
 	}
 }
 

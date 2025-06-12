@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/05 15:09:59 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/12 12:36:56 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define MSG_MUTEX_INIT_ERR "Error while initializing a mutex\n"
 # define MSG_MUTEX_LOCK_ERR "Error while locking a mutex\n"
 # define MSG_MEM_ERR "Error while locking a mutex\n"
-# define MSG_PHIL_FORK "has picked up a fork\n"
+# define MSG_PHIL_FORK "has taken a fork\n"
 # define MSG_PHIL_SLEEP "is sleeping\n"
 # define MSG_PHIL_EAT "is eating\n"
 # define MSG_PHIL_THINK "is thinking\n"

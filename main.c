@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:16 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/10 12:49:23 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/12 13:13:53 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void ft_sleep(int ms, t_appstate *state)
 	while(start + ms > curr && check_running(state))
 	{
 		curr = ft_gettime();
-		usleep((((start + ms * 10) - curr) / 2) * 100);
+		usleep((((start + ms * 10) - curr) / 20));
 	}
 }
 
@@ -54,13 +54,13 @@ void ft_error(enum e_messagetxt msg)
 	printf("ERROR");
 }
 
-static void	displayUsage()
+void	displayUsage()
 {
 	printf("usage: ./philo <number_of_philosophers> <time_to_die> <time_to_eat> \
 <time_to_sleep> [number_of_times_each_philosopher_must_eat]\n");
 }
 
-static bool initState(t_appstate *state)
+bool initState(t_appstate *state)
 {
 	uint32_t	ctr;
 
@@ -77,7 +77,7 @@ static bool initState(t_appstate *state)
 			create_ft_mutex(&(state->forks[ctr])))
 			return (1);
 		state->philosophers[ctr].forks[0] = &(state->forks[ctr]);
-		state->philosophers[ctr].forks[1] = &(state->forks[ctr+1%state->number_philos]);
+		state->philosophers[ctr].forks[1] = &(state->forks[(ctr+1)%state->number_philos]);
 		state->philosophers[ctr].handle_speak = &(state->speaker);
 		state->philosophers[ctr].id = ctr + 1;
 		ctr++;
@@ -87,7 +87,7 @@ static bool initState(t_appstate *state)
 	return (0);
 }
 
-static bool	startThreads(t_appstate *state)
+bool	startThreads(t_appstate *state)
 {
 	uint32_t ctr;
 
@@ -115,7 +115,7 @@ void	cleanup(t_appstate *state)
 		pthread_join(state->philosophers[ctr++].thread, NULL);
 	pthread_join(state->speaker.thread, NULL);
 	ctr = 0;
-	free(state->speaker.read);
+	pthread_mutex_destroy(&(state->speaker.lock_write));
 	while (ctr < state->number_philos)
 	{
 		destroy_ft_mutex(&(state->philosophers[ctr].has_eaten));
@@ -127,21 +127,21 @@ void	cleanup(t_appstate *state)
 	destroy_ft_mutex(&(state->running));
 }
 
-// int	main(int argc, char **argv)
-// {
-// 	t_appstate state;
+int	main(int argc, char **argv)
+{
+	t_appstate state;
 	
-// 	if(parse_input(argc, argv, &state))
-// 		displayUsage();
-// 	else
-// 	{
-// 		ft_gettime();			//Prime start
-// 		initState(&state);
-// 		startThreads(&state);
-// 		pthread_join(state.observer, NULL);
-// 		cleanup(&state);
-// 	}
-// }
+	if(parse_input(argc, argv, &state))
+		displayUsage();
+	else
+	{
+		ft_gettime();			//Prime start
+		initState(&state);
+		startThreads(&state);
+		pthread_join(state.observer, NULL);
+		cleanup(&state);
+	}
+}
 
 // int main(int argc, char **argv)
 // {
@@ -175,21 +175,65 @@ void	cleanup(t_appstate *state)
 // 	}
 // }
 
-int main ()
-{
-	t_appstate state;
+// int main ()
+// {
+// 	t_appstate state;
 
-	parse_input(5, (char *[]){"./philo", "2", "800", "200", "200"}, &state);
-	ft_gettime(); // Prime start
-	initState(&state);
-	state.number_philos = 1;
-	if (startThreads(&state))
-	{
-		displayUsage();
-		ft_error(MEM_ERR);
-		return (1);
-	}
-	pthread_join(state.observer, NULL);
-	cleanup(&state);
-	return (0);
-}
+// 	parse_input(5, (char *[]){"./philo", "2", "800", "200", "200"}, &state);
+// 	ft_gettime(); // Prime start
+// 	initState(&state);
+// 	state.number_philos = 1;
+// 	if (startThreads(&state))
+// 	{
+// 		displayUsage();
+// 		ft_error(MEM_ERR);
+// 		return (1);
+// 	}
+// 	pthread_join(state.observer, NULL);
+// 	cleanup(&state);
+// 	return (0);
+// }
+
+// void *dummyThread(void *arg){
+// 	int counter = 0;
+// 	t_philosopher *phil = (t_philosopher *)arg;
+
+// 	while (counter < 2)
+// 	{
+// 		printf("%d ID %lu count: %d\n", phil->id, ft_gettime(), counter);
+// 		ft_sleep(300, phil->state);
+// 		counter++;
+// 	}
+// 	return NULL;
+// }
+
+// int main ()
+// {
+// 	int i = 0;
+// 	pthread_t dummys[100];
+
+// 	ft_gettime();
+// 	t_appstate state;
+// 	state.running.value = true;
+// 	state.running.checklock = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+// 	state.running.locked = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+// 	state.philosophers = malloc(100*sizeof(t_philosopher));
+// 	while (i < 10)
+// 	{
+		
+// 		state.philosophers[i].id = i + 1;
+// 		state.philosophers[i].state = &state;
+// 		if (pthread_create(&dummys[i], NULL, dummyThread, &(state.philosophers[i])))
+// 		{
+// 			printf("Error creating thread %d\n", i);
+// 			return (1);
+// 		}
+// 		i++;
+// 	}
+// 	while (i > 0)
+// 	{
+// 		pthread_join(dummys[i - 1], NULL);
+// 		i--;
+// 	}
+// 	free(state.philosophers);
+// }

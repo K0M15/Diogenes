@@ -2,7 +2,7 @@ CC=cc
 FILES= main.c ft_mutex.c observer.c philosopher.c speaker.c input.c
 NAME=philosopher
 FLAGS = -Wall -Wextra -Werror
-FLAGS += -g -fsanitize=address
+FLAGS += -g -gdwarf-2 #-fsanitize=address
 OBJ_DIR = objects
 
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(FILES))

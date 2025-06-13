@@ -6,7 +6,7 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:32:23 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/06 08:34:44 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/12 14:39:22 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ bool ft_mutex_lock(t_ft_mutex *mut)
 
 void ft_mutex_unlock(t_ft_mutex *mut)
 {
-	pthread_mutex_unlock(&(mut->locked));
 	pthread_mutex_lock(&(mut->checklock));
+	pthread_mutex_unlock(&(mut->locked));
 	mut->value = false;
 	pthread_mutex_unlock(&(mut->checklock));
 }

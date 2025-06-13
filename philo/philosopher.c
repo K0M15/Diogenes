@@ -6,23 +6,40 @@
 /*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:32:13 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/12 13:07:39 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/12 14:51:41 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
 int	get_forks(t_philosopher *phil){
+	int has_forks[2];
+
+	has_forks[0] = 0;
+	has_forks[1] = 0;
 	while (check_running(phil->state))
 	{
-		if (pthread_mutex_lock(&phil->forks[0]->locked) == 0 && pthread_mutex_lock(&phil->forks[1]->locked) == 0)
+		has_forks[0] = pthread_mutex_lock(&phil->forks[0]->locked) == 0;
+		has_forks[1] = pthread_mutex_lock(&phil->forks[1]->locked) == 0;
+		if (has_forks[0] && has_forks[1])
 			break;
 		else
-			drop_forks(phil);
+		{
+			if (has_forks[0])
+				pthread_mutex_unlock(&phil->forks[0]->locked);
+			if (has_forks[1])
+				pthread_mutex_unlock(&phil->forks[1]->locked);
+		}
 		usleep(1);
 	}
 	if (check_running(phil->state) == false)
+	{
+		if (has_forks[0])
+			pthread_mutex_unlock(&phil->forks[0]->locked);
+		if (has_forks[1])
+			pthread_mutex_unlock(&phil->forks[1]->locked);
 		return (1);
+	}
 	add_message(BLUE, PHIL_FORK, phil->id, phil->handle_speak);
 	add_message(BLUE, PHIL_FORK, phil->id, phil->handle_speak);
 	return (0);
@@ -31,6 +48,7 @@ int	get_forks(t_philosopher *phil){
 
 void	drop_forks(t_philosopher *phil)
 {
+	// rework this to know if this thread holds the forks
 	ft_mutex_unlock(phil->forks[0]);
 	ft_mutex_unlock(phil->forks[1]);
 }

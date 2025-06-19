@@ -1,7 +1,7 @@
 CC=cc
 FILES= main.c ft_mutex.c observer.c philosopher.c speaker.c input.c
 FILES+= time.c message.c ft_mutex_id.c
-NAME=philosopher
+NAME=philosophers
 FLAGS = -Wall -Wextra -Werror
 FLAGS += -g -gdwarf-2 #-fsanitize=address
 OBJ_DIR = objects

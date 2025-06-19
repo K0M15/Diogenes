@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/19 15:05:23 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:46:43 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include <string.h>
+# include <stdio.h>
+# include <stdlib.h>
 
 # define MSG_RETRIEVE_TIME_ERR "Error while retrieving time\n"
 # define MSG_THREAD_INIT_ERR "Error while starting thread\n"
@@ -44,6 +46,7 @@ enum e_textcolor
 
 enum e_messagetxt
 {
+	NO_MESSAGE,
 	DEFAULT_ERR,
 	RETRIEVE_TIME_ERR,
 	THREAD_INIT_ERR,
@@ -109,13 +112,16 @@ typedef struct s_appstate
 
 uint64_t	ft_gettime(void);
 void		ft_sleep(int ms, t_appstate *state);
-void		ft_error(enum e_messagetxt msg);
+void		ft_error(enum e_messagetxt msg, t_speaker *speaker);
 bool		check_running(t_appstate *state);
 bool		stop_running(t_appstate *state);
 void		drop_forks(t_philosopher *phil);
 
 int			add_message(enum e_textcolor color, enum e_messagetxt msg,
 				uint32_t phil_id, t_speaker *speaker);
+void		display_usage(void);
+char		*get_message(enum e_messagetxt msg);
+int			free_messages(t_message *msg);
 bool		ft_mutex_lock(t_ft_mutex *mut);
 void		ft_mutex_unlock(t_ft_mutex *mut);
 bool		ft_mutex_setvalue(t_ft_mutex *mut, uint64_t value);

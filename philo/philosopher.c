@@ -6,24 +6,20 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:32:13 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/17 17:15:19 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:29:26 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	get_forks(t_philosopher *phil)
+void	lock_forks(int has_forks[2], t_philosopher *phil)
 {
-	int	has_forks[2];
-
-	has_forks[0] = 0;
-	has_forks[1] = 0;
 	while (check_running(phil->state))
 	{
 		has_forks[0] = pthread_mutex_lock(&phil->forks[0]->locked) == 0;
 		has_forks[1] = pthread_mutex_lock(&phil->forks[1]->locked) == 0;
 		if (has_forks[0] && has_forks[1])
-			break ;
+			return ;
 		else
 		{
 			if (has_forks[0])
@@ -33,6 +29,15 @@ int	get_forks(t_philosopher *phil)
 		}
 		usleep(1);
 	}
+}
+
+int	get_forks(t_philosopher *phil)
+{
+	int	has_forks[2];
+
+	has_forks[0] = 0;
+	has_forks[1] = 0;
+	lock_forks(has_forks, phil);
 	if (check_running(phil->state) == false)
 	{
 		if (has_forks[0])

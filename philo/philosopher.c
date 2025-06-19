@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
+/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:32:13 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/12 14:51:41 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/17 17:15:19 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	get_forks(t_philosopher *phil){
-	int has_forks[2];
+int	get_forks(t_philosopher *phil)
+{
+	int	has_forks[2];
 
 	has_forks[0] = 0;
 	has_forks[1] = 0;
@@ -22,7 +23,7 @@ int	get_forks(t_philosopher *phil){
 		has_forks[0] = pthread_mutex_lock(&phil->forks[0]->locked) == 0;
 		has_forks[1] = pthread_mutex_lock(&phil->forks[1]->locked) == 0;
 		if (has_forks[0] && has_forks[1])
-			break;
+			break ;
 		else
 		{
 			if (has_forks[0])
@@ -45,40 +46,42 @@ int	get_forks(t_philosopher *phil){
 	return (0);
 }
 
-
 void	drop_forks(t_philosopher *phil)
 {
-	// rework this to know if this thread holds the forks
 	ft_mutex_unlock(phil->forks[0]);
 	ft_mutex_unlock(phil->forks[1]);
 }
 
 void	philo_main(t_philosopher *phil)
 {
-	bool firstTime;
-	
-	firstTime = true;
-	while (check_running(phil->state)){
-		if (firstTime && phil->id%2)
-			ft_sleep((phil->state->time_to_eat) / 2, phil->state); // CHECK if first time
+	bool	first_time;
+
+	first_time = true;
+	while (check_running(phil->state))
+	{
+		if (first_time && phil->id % 2)
+			ft_sleep((phil->state->time_to_eat) / 2, phil->state);
 		add_message(BLUE, PHIL_THINK, phil->id, phil->handle_speak);
 		if (get_forks(phil))
 			return ;
 		ft_mutex_setvalue(&(phil->last_ate), ft_gettime());
 		add_message(GREEN, PHIL_EAT, phil->id, phil->handle_speak);
-		ft_sleep(phil->state->time_to_eat, phil->state);	// could reduce time to account for last_ate time
+		ft_sleep(phil->state->time_to_eat, phil->state);
 		ft_mutex_incvalue(&(phil->has_eaten));
 		drop_forks(phil);
 		if (!check_running(phil->state))
 			return ;
 		add_message(BLUE, PHIL_SLEEP, phil->id, phil->handle_speak);
 		ft_sleep(phil->state->time_to_sleep, phil->state);
-		firstTime = false;
+		first_time = false;
 	}
 }
 
-void	*philo_thread(void *arg) {
-    t_philosopher *philo = (t_philosopher *)arg;
-    philo_main(philo);
-    return NULL;
+void	*philo_thread(void *arg)
+{
+	t_philosopher	*philo;
+
+	philo = (t_philosopher *)arg;
+	philo_main(philo);
+	return (NULL);
 }

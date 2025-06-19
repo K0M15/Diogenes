@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   observer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
+/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/12 11:50:45 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/17 17:18:41 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,20 @@
 
 bool	check_running(t_appstate *state)
 {
-	bool is_running;
-	
+	bool	is_running;
+
 	is_running = ft_mutex_getvalue(&(state->running));
 	return (is_running);
 }
-bool 		stop_running(t_appstate *state)
+
+bool	stop_running(t_appstate *state)
 {
 	ft_mutex_setvalue(&(state->running), false);
 	return (true);
 }
 
-int	check_philo(t_philosopher *phil, uint64_t time){
+int	check_philo(t_philosopher *phil, uint64_t time)
+{
 	if (ft_mutex_getvalue(&(phil->has_eaten)) >= phil->state->notepme)
 		return (1);
 	if (ft_mutex_getvalue(&(phil->last_ate)) + phil->state->time_to_die < time)
@@ -36,11 +38,10 @@ int	check_philo(t_philosopher *phil, uint64_t time){
 	return (0);
 }
 
-void observer_main(t_appstate *state)
+void	observer_main(t_appstate *state)
 {
 	uint8_t		has_eaten;
 	uint8_t		check;
-	// uint64_t	time;
 
 	while (check_running(state))
 	{
@@ -48,21 +49,21 @@ void observer_main(t_appstate *state)
 		check = 0;
 		while (check < state->number_philos && check_running(state))
 		{
-			has_eaten += check_philo(&(state->philosophers[check]), ft_gettime());	//should be quite fast, if time error occ, recheck time each loop
+			has_eaten += check_philo(&(state->philosophers[check]),
+					ft_gettime());
 			check++;
 		}
 		if (has_eaten == state->number_philos && state->notepme != 0)
 			stop_running(state);
-		// add_message(RED, PHIL_THINK, 10000 + has_eaten, &(state->speaker)); // Observer thinking
 		usleep(1000);
 	}
 }
 
-void *observer_wrapper(void *arg)
+void	*observer_wrapper(void *arg)
 {
-	t_appstate *state;
+	t_appstate	*state;
 
 	state = (t_appstate *)arg;
-    observer_main(state);
-    return NULL;
+	observer_main(state);
+	return (NULL);
 }

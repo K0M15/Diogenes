@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 15:30:39 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/23 15:59:32 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@
 
 enum e_textcolor
 {
-	RED = 31,
-	GREEN = 32,
-	BLUE = 94
+	RED = 0,
+	GREEN = 0,
+	BLUE = 0
 };
 
 enum e_messagetxt

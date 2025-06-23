@@ -1,9 +1,0 @@
-{
-	"files.associations": {
-		"locale": "c",
-		"string": "c",
-		"ft_malloc.h": "c",
-		"sstream": "c",
-		"pthread.h": "c"
-	}
-}

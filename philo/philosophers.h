@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/19 15:46:43 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/23 15:30:39 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@
 # define MSG_PHIL_THINK "is thinking\n"
 # define MSG_PHIL_DIE "has died\n"
 # define MSG_DEFAULT_ERROR "An error has occured\n"
-
+# define MSG_STATE_INIT_ERR "Error while setting up the state\n"
+# define MSG_START_THREADS_ERR "Error while creating the threads\n"
 # define MESSAGE_BUFFER_SIZE 1000
 
 enum e_textcolor

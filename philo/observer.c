@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/19 16:40:37 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/23 15:31:36 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ bool	stop_running(t_appstate *state)
 
 int	check_philo(t_philosopher *phil, uint64_t time)
 {
-	if (phil->state->notepme && ft_mutex_getvalue(&(phil->has_eaten)) >= phil->state->notepme)
+	if (phil->state->notepme
+		&& ft_mutex_getvalue(&(phil->has_eaten)) >= phil->state->notepme)
 		return (1);
 	if (ft_mutex_getvalue(&(phil->last_ate)) + phil->state->time_to_die < time)
 	{

@@ -6,11 +6,29 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/19 15:47:33 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/23 17:52:47 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void find_and_speak_last(t_appstate *state)
+{
+	t_message *msg;
+
+	msg = state->speaker.read;
+	while (msg != NULL && msg->msg != PHIL_DIE)
+		msg = msg->next;
+	if (msg == NULL)
+		// write(2, MSG_NO_DEATH_ERR, sizeof(MSG_NO_DEATH_ERR));
+		return ;
+	else
+		printf("\033[%d;m%llu %d %s\033[0m",
+			msg->color,
+			msg->time,
+			msg->phil_id,
+			get_message(msg->msg));
+}
 
 int	speaker_main(t_appstate *state)
 {
@@ -36,6 +54,7 @@ int	speaker_main(t_appstate *state)
 		free(speaker->read);
 		speaker->read = next;
 	}
+	find_and_speak_last(state);
 	return (0);
 }
 

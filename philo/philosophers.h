@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 15:59:32 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/23 17:42:34 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # define MSG_DEFAULT_ERROR "An error has occured\n"
 # define MSG_STATE_INIT_ERR "Error while setting up the state\n"
 # define MSG_START_THREADS_ERR "Error while creating the threads\n"
+# define MSG_MIN_PHILOS_ERR "Please enter more then 0 philosophers\n"
 # define MESSAGE_BUFFER_SIZE 1000
 
 enum e_textcolor

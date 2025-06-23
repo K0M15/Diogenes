@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:15:39 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/19 16:36:39 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/23 17:42:47 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,15 @@ static int64_t	parse_string(char *str)
 static int	validate_state(t_appstate *state)
 {
 	if ((state->number_philos | state->time_to_die | state->time_to_eat
-			| state->time_to_sleep | state->notepme) > INT32_MAX)
+		| state->time_to_sleep | state->notepme) > INT32_MAX)
 		return (1);
 	if (state->number_philos > UINT32_MAX)
 		return (1);
+	if (state->number_philos == 0)
+	{
+		write(2, MSG_MIN_PHILOS_ERR, sizeof(MSG_MIN_PHILOS_ERR));
+		return (1);
+	}
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 15:31:36 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/23 17:43:07 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ int	check_philo(t_philosopher *phil, uint64_t time)
 
 void	observer_main(t_appstate *state)
 {
-	uint8_t		has_eaten;
-	uint8_t		check;
+	uint32_t	has_eaten;
+	uint32_t	check;
 
 	while (check_running(state))
 	{

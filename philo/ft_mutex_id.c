@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_mutex_id.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 15:24:05 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/19 15:24:40 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/25 10:49:17 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,5 @@ uint32_t	create_ft_mutex(t_ft_mutex *mut)
 uint32_t	destroy_ft_mutex(t_ft_mutex *mut)
 {
 	return (pthread_mutex_destroy(&(mut->checklock))
-		|| pthread_mutex_init(&(mut->locked), NULL));
+		|| pthread_mutex_destroy(&(mut->locked)));
 }

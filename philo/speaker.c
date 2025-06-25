@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   speaker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 17:52:47 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/25 11:11:48 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 void find_and_speak_last(t_appstate *state)
 {
-	t_message *msg;
+	t_message	*msg;
 
 	msg = state->speaker.read;
 	while (msg != NULL && msg->msg != PHIL_DIE)
-		msg = msg->next;
+		printf("\033[%d;m%llu %d %s\033[0m",
+				msg->color,
+				(unsigned long long)msg->time,
+				msg->phil_id,
+				get_message(msg->msg));
 	if (msg == NULL)
 		// write(2, MSG_NO_DEATH_ERR, sizeof(MSG_NO_DEATH_ERR));
 		return ;
 	else
 		printf("\033[%d;m%llu %d %s\033[0m",
 			msg->color,
-			msg->time,
+			(unsigned long long)msg->time,
 			msg->phil_id,
 			get_message(msg->msg));
 }
@@ -47,7 +51,7 @@ int	speaker_main(t_appstate *state)
 		pthread_mutex_unlock(&(speaker->lock_write));
 		printf("\033[%d;m%llu %d %s\033[0m",
 			speaker->read->next->color,
-			speaker->read->next->time,
+			(unsigned long long) speaker->read->next->time,
 			speaker->read->next->phil_id,
 			get_message(speaker->read->next->msg));
 		next = speaker->read->next;

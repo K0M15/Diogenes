@@ -5,7 +5,7 @@ FILES+= time.c message.c ft_mutex_id.c
 NAME=philo
 FLAGS = -Wall -Wextra -Werror
 FLAGS += -g #-gdwarf-2 
-# FLAGS += -fsanitize=address
+FLAGS += -fsanitize=address
 OBJ_DIR = objects
 
 .PHONY: clean fclean all re

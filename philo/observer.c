@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   observer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/07/19 10:46:20 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 09:00:52 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ void	*observer_wrapper(void *arg)
 	t_appstate	*state;
 
 	state = (t_appstate *)arg;
+	pthread_mutex_lock(&state->gate);
+	pthread_mutex_unlock(&state->gate);
 	observer_main(state);
 	return (NULL);
 }

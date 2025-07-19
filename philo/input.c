@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:15:39 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 17:42:47 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/25 10:43:30 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	validate_state(t_appstate *state)
 		return (1);
 	if (state->number_philos == 0)
 	{
-		write(2, MSG_MIN_PHILOS_ERR, sizeof(MSG_MIN_PHILOS_ERR));
+		(void)!write(2, MSG_MIN_PHILOS_ERR, sizeof(MSG_MIN_PHILOS_ERR));
 		return (1);
 	}
 	return (0);

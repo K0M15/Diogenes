@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:16 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 15:36:25 by afelger          ###   ########.fr       */
+/*   Updated: 2025/06/25 10:43:22 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,16 +92,12 @@ int	main(int argc, char **argv)
 	{
 		ft_gettime();
 		if (init_state(&state))
-		{
-			write(2, MSG_STATE_INIT_ERR, sizeof(MSG_STATE_INIT_ERR));
-			return (1);
-		}
+			return ((void)!write(2, MSG_STATE_INIT_ERR,
+				sizeof(MSG_STATE_INIT_ERR)), 1);
 		ft_error(NO_MESSAGE, &state.speaker);
 		if (start_threads(&state))
-		{
-			write(2, MSG_START_THREADS_ERR, sizeof(MSG_START_THREADS_ERR));
-			return (1);
-		}
+			return ((void)!write(2, MSG_START_THREADS_ERR,
+				sizeof(MSG_START_THREADS_ERR)), 1);
 		pthread_join(state.observer, NULL);
 		cleanup(&state);
 	}

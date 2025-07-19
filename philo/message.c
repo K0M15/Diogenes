@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   message.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
+/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 15:26:00 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/25 10:55:13 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 09:38:12 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,14 +79,6 @@ int	free_messages(t_message *msg)
 
 	while (msg)
 	{
-		// if (msg->phil_id == UINT32_MAX)
-		// {
-			printf("\033[%d;m%llu %d %s\033[0m",
-				msg->color,
-				(unsigned long long)msg->time,
-				msg->phil_id,
-				get_message(msg->msg));
-		// }
 		next = msg->next;
 		free(msg);
 		msg = next;

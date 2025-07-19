@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   speaker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
+/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/25 11:11:48 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 09:39:36 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,22 @@ void find_and_speak_last(t_appstate *state)
 {
 	t_message	*msg;
 
-	msg = state->speaker.read;
+	msg = state->speaker.read->next;
 	while (msg != NULL && msg->msg != PHIL_DIE)
-		printf("\033[%d;m%llu %d %s\033[0m",
-				msg->color,
+	{
+		printf("%llu %d %s",
 				(unsigned long long)msg->time,
 				msg->phil_id,
 				get_message(msg->msg));
+		msg = msg->next;
+	}
 	if (msg == NULL)
+	{
 		// write(2, MSG_NO_DEATH_ERR, sizeof(MSG_NO_DEATH_ERR));
 		return ;
+	}
 	else
-		printf("\033[%d;m%llu %d %s\033[0m",
-			msg->color,
+		printf("%llu %d %s",
 			(unsigned long long)msg->time,
 			msg->phil_id,
 			get_message(msg->msg));
@@ -46,11 +49,11 @@ int	speaker_main(t_appstate *state)
 		if (speaker->read == speaker->write)
 		{
 			pthread_mutex_unlock(&(speaker->lock_write));
+			ft_sleep(5, state);
 			continue ;
 		}
 		pthread_mutex_unlock(&(speaker->lock_write));
-		printf("\033[%d;m%llu %d %s\033[0m",
-			speaker->read->next->color,
+		printf("%llu %d %s",
 			(unsigned long long) speaker->read->next->time,
 			speaker->read->next->phil_id,
 			get_message(speaker->read->next->msg));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
+/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:16 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/25 10:43:22 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 09:10:50 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ bool	init_state(t_appstate *state)
 
 	state->philosophers = malloc(sizeof(t_philosopher) * state->number_philos);
 	state->forks = malloc(sizeof(t_ft_mutex) * state->number_philos);
+	pthread_mutex_init(&state->gate, NULL);
 	if (state->forks == NULL || state->philosophers == NULL)
 		return (1);
 	ctr = 0;
@@ -47,8 +48,10 @@ bool	start_threads(t_appstate *state)
 	uint32_t	ctr;
 
 	ctr = 0;
+	pthread_mutex_lock(&state->gate);
 	if (init_speaker(&(state->speaker), state))
 		return (1);
+	
 	while (ctr < state->number_philos)
 	{
 		if (pthread_create(&(state->philosophers[ctr].thread), NULL,
@@ -71,6 +74,7 @@ void	cleanup(t_appstate *state)
 	pthread_join(state->speaker.thread, NULL);
 	ctr = 0;
 	pthread_mutex_destroy(&(state->speaker.lock_write));
+	pthread_mutex_destroy(&state->gate);
 	while (ctr < state->number_philos)
 	{
 		destroy_ft_mutex(&(state->philosophers[ctr].has_eaten));
@@ -98,6 +102,7 @@ int	main(int argc, char **argv)
 		if (start_threads(&state))
 			return ((void)!write(2, MSG_START_THREADS_ERR,
 				sizeof(MSG_START_THREADS_ERR)), 1);
+		pthread_mutex_unlock(&state.gate);
 		pthread_join(state.observer, NULL);
 		cleanup(&state);
 	}

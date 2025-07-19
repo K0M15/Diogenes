@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 17:52:12 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 09:10:18 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ typedef struct s_appstate
 	uint32_t		time_to_eat;
 	uint32_t		time_to_sleep;
 	uint32_t		notepme;
+	pthread_mutex_t	gate;
 }	t_appstate;
 
 uint64_t	ft_gettime(void);

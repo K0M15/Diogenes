@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:32:13 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 17:56:09 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 09:06:49 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ void	*philo_thread(void *arg)
 	t_philosopher	*philo;
 
 	philo = (t_philosopher *)arg;
+	pthread_mutex_lock(&philo->state->gate);
+	pthread_mutex_unlock(&philo->state->gate);
 	philo_main(philo);
 	return (NULL);
 }

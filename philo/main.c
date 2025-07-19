@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:16 by afelger           #+#    #+#             */
-/*   Updated: 2025/07/19 09:10:50 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 10:20:38 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ bool	start_threads(t_appstate *state)
 	pthread_mutex_lock(&state->gate);
 	if (init_speaker(&(state->speaker), state))
 		return (1);
-	
 	while (ctr < state->number_philos)
 	{
 		if (pthread_create(&(state->philosophers[ctr].thread), NULL,
@@ -94,14 +93,14 @@ int	main(int argc, char **argv)
 		return (display_usage(), 1);
 	else
 	{
-		ft_gettime();
 		if (init_state(&state))
-			return ((void)!write(2, MSG_STATE_INIT_ERR,
-				sizeof(MSG_STATE_INIT_ERR)), 1);
+			return ((void) !write(2, MSG_STATE_INIT_ERR,
+					sizeof(MSG_STATE_INIT_ERR)), 1);
 		ft_error(NO_MESSAGE, &state.speaker);
+		ft_gettime();
 		if (start_threads(&state))
-			return ((void)!write(2, MSG_START_THREADS_ERR,
-				sizeof(MSG_START_THREADS_ERR)), 1);
+			return ((void) !write(2, MSG_START_THREADS_ERR,
+					sizeof(MSG_START_THREADS_ERR)), 1);
 		pthread_mutex_unlock(&state.gate);
 		pthread_join(state.observer, NULL);
 		cleanup(&state);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
+/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:15:39 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/25 10:43:30 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 10:19:46 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int64_t	parse_string(char *str)
 static int	validate_state(t_appstate *state)
 {
 	if ((state->number_philos | state->time_to_die | state->time_to_eat
-		| state->time_to_sleep | state->notepme) > INT32_MAX)
+			| state->time_to_sleep | state->notepme) > INT32_MAX)
 		return (1);
 	if (state->number_philos > UINT32_MAX)
 		return (1);

@@ -6,13 +6,13 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:28:18 by afelger           #+#    #+#             */
-/*   Updated: 2025/07/19 09:39:36 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 10:18:45 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void find_and_speak_last(t_appstate *state)
+void	find_and_speak_last(t_appstate *state)
 {
 	t_message	*msg;
 
@@ -20,16 +20,13 @@ void find_and_speak_last(t_appstate *state)
 	while (msg != NULL && msg->msg != PHIL_DIE)
 	{
 		printf("%llu %d %s",
-				(unsigned long long)msg->time,
-				msg->phil_id,
-				get_message(msg->msg));
+			(unsigned long long)msg->time,
+			msg->phil_id,
+			get_message(msg->msg));
 		msg = msg->next;
 	}
 	if (msg == NULL)
-	{
-		// write(2, MSG_NO_DEATH_ERR, sizeof(MSG_NO_DEATH_ERR));
 		return ;
-	}
 	else
 		printf("%llu %d %s",
 			(unsigned long long)msg->time,
@@ -49,7 +46,7 @@ int	speaker_main(t_appstate *state)
 		if (speaker->read == speaker->write)
 		{
 			pthread_mutex_unlock(&(speaker->lock_write));
-			ft_sleep(5, state);
+			usleep(5);
 			continue ;
 		}
 		pthread_mutex_unlock(&(speaker->lock_write));

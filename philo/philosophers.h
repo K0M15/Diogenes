@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:51 by afelger           #+#    #+#             */
-/*   Updated: 2025/07/19 09:10:18 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 10:19:06 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct s_speaker
 
 typedef struct s_philosopher
 {
-	uint8_t				id;
+	uint16_t			id;
 	t_speaker			*handle_speak;
 	t_ft_mutex			has_eaten;
 	pthread_t			thread;

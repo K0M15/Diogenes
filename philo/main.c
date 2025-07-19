@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:14:16 by afelger           #+#    #+#             */
-/*   Updated: 2025/07/19 10:20:38 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 10:47:33 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,10 @@ int	main(int argc, char **argv)
 			return ((void) !write(2, MSG_STATE_INIT_ERR,
 					sizeof(MSG_STATE_INIT_ERR)), 1);
 		ft_error(NO_MESSAGE, &state.speaker);
-		ft_gettime();
 		if (start_threads(&state))
 			return ((void) !write(2, MSG_START_THREADS_ERR,
 					sizeof(MSG_START_THREADS_ERR)), 1);
+		ft_gettime();
 		pthread_mutex_unlock(&state.gate);
 		pthread_join(state.observer, NULL);
 		cleanup(&state);

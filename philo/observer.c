@@ -6,7 +6,7 @@
 /*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:09:49 by afelger           #+#    #+#             */
-/*   Updated: 2025/06/23 17:43:07 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/19 10:46:20 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	observer_main(t_appstate *state)
 		}
 		if (has_eaten == state->number_philos && state->notepme != 0)
 			stop_running(state);
-		usleep(1000);
+		usleep(10);
 	}
 }
 

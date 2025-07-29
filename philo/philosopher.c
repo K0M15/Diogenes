@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afelger <alain.felger93+42@gmail.com>      +#+  +:+       +#+        */
+/*   By: afelger <afelger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:32:13 by afelger           #+#    #+#             */
-/*   Updated: 2025/07/19 08:32:07 by afelger          ###   ########.fr       */
+/*   Updated: 2025/07/29 15:13:56 by afelger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,25 @@ void	lock_forks(int has_forks[2], t_philosopher *phil)
 	{
 		if (phil->forks[0] == phil->forks[1])
 			continue ;
-		if (phil->id % 2 == 0) {
-            has_forks[0] = pthread_mutex_lock(&phil->forks[0]->locked) == 0;
-            has_forks[1] = pthread_mutex_lock(&phil->forks[1]->locked) == 0;
-        } else {
-            has_forks[1] = pthread_mutex_lock(&phil->forks[1]->locked) == 0;
-            has_forks[0] = pthread_mutex_lock(&phil->forks[0]->locked) == 0;
-        }
-        if (has_forks[0] && has_forks[1])
-            return ;
-        else
-        {
-            if (has_forks[0])
-                pthread_mutex_unlock(&phil->forks[0]->locked);
-            if (has_forks[1])
-                pthread_mutex_unlock(&phil->forks[1]->locked);
-        }
+		if (phil->id % 2 == 0)
+		{
+			has_forks[0] = pthread_mutex_lock(&phil->forks[0]->locked) == 0;
+			has_forks[1] = pthread_mutex_lock(&phil->forks[1]->locked) == 0;
+		}
+		else
+		{
+			has_forks[1] = pthread_mutex_lock(&phil->forks[1]->locked) == 0;
+			has_forks[0] = pthread_mutex_lock(&phil->forks[0]->locked) == 0;
+		}
+		if (has_forks[0] && has_forks[1])
+			return ;
+		else
+		{
+			if (has_forks[0])
+				pthread_mutex_unlock(&phil->forks[0]->locked);
+			if (has_forks[1])
+				pthread_mutex_unlock(&phil->forks[1]->locked);
+		}
 		usleep(1);
 	}
 }
